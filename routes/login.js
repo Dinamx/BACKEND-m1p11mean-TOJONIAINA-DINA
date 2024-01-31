@@ -13,7 +13,7 @@ router.get('/signup', function(req, res, next) {
     // Ici, vous pouvez ajouter le code pour traiter la demande d'inscription.
     console.log("Yoo")
     let utilisateur = new Utilisateur({
-        email: 'example@email.com',
+        email: 'example2@email.com',
         password: 'password',
         type_user: 'admin'
     });
@@ -27,5 +27,32 @@ router.get('/signup', function(req, res, next) {
     // res.json({ message: 'Signup request received' });
 });
 
+
+router.get('/users', function(req, res, next) {
+    Utilisateur.find({})
+        .then(users => {
+            console.log('yo')
+            console.log(users)
+            res.json(users);
+        })
+        .catch(error => console.error('Une erreur s\'est produite lors de la récupération des utilisateurs: ', error));
+});
+
+
+router.get('/users', function(req, res, next) {
+    Utilisateur.find({})
+        .then(users => {
+            console.log('yo')
+            console.log(users)
+            res.json(users);
+        })
+        .catch(error => console.error('Une erreur s\'est produite lors de la récupération des utilisateurs: ', error));
+});
+
+
+
+
+
+//Maintenant fais moi un /Users qui me retourne la liste des users
 
 module.exports = router;
