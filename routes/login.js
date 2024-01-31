@@ -28,6 +28,8 @@ router.get('/signup', function(req, res, next) {
 });
 
 
+
+
 router.get('/users', function(req, res, next) {
     Utilisateur.find({})
         .then(users => {
@@ -39,14 +41,23 @@ router.get('/users', function(req, res, next) {
 });
 
 
-router.get('/users', function(req, res, next) {
-    Utilisateur.find({})
-        .then(users => {
-            console.log('yo')
-            console.log(users)
-            res.json(users);
+//Forme du json a envoyer
+// {
+//     "email": "example2email.com",
+//     "password": "password"
+// }
+
+router.post('/users', function(req, res, next) {
+    const { email, password } = req.body;
+    Utilisateur.findOne({ email, password })
+        .then(user => {
+            if (user) {
+                res.json(user.type_user);
+            } else {
+                res.status(404).send('User not found');
+            }
         })
-        .catch(error => console.error('Une erreur s\'est produite lors de la récupération des utilisateurs: ', error));
+        .catch(error => console.error('Une erreur s\'est produite lors de la recherche de l\'utilisateur: ', error));
 });
 
 
