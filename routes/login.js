@@ -11,18 +11,18 @@ router.post('/login', function(req, res, next) {
 
 router.get('/signup', function(req, res, next) {
     // Ici, vous pouvez ajouter le code pour traiter la demande d'inscription.
-    console.log("Yoo")
-    let utilisateur = new Utilisateur({
-        email: 'example2@email.com',
-        password: 'password',
-        type_user: 'admin'
-    });
-    utilisateur.save()
-        .then(() => {
-            console.log('SIGNUP , Done Be ')
-            res.json({ message: 'Signup request received' });
-        })
-        .catch(error => console.error('An error occurred while saving the utilisateur: ', error));
+    console.log("Signup and shit")
+    // let utilisateur = new Utilisateur({
+    //     email: 'example2@email.com',
+    //     password: 'password',
+    //     type_user: 'admin'
+    // });
+    // utilisateur.save()
+    //     .then(() => {
+    //         console.log('SIGNUP , Done Be ')
+    //         res.json({ message: 'Signup request received' });
+    //     })
+    //     .catch(error => console.error('An error occurred while saving the utilisateur: ', error));
     // console.log('SIGNUP , Done Be ')
     // res.json({ message: 'Signup request received' });
 });

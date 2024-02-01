@@ -10,12 +10,14 @@ const connectToDb = require('./routes/connection');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
+var testRouteur = require('./routes/tests');
 
 
 
 var app = express();
 
 
+//Connecte la base connection mongo
 connectToDb();
 
 // mongoose.connect('mongodb+srv://poseidon:poseidon@poseidon.jpmfmcc.mongodb.net/?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true})
@@ -36,12 +38,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
+
 app.use('/', indexRouter);
+// Ato no ahazoana ny users rehetra
 app.use('/users', usersRouter);
 //Login
 
 app.use('/login', loginRouter);
-app.use('/signup', loginRouter);
+
+//Pour tester des trucs
+app.use('/test', testRouteur);
 
 
 
