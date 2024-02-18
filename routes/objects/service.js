@@ -10,4 +10,11 @@ const ServiceSchema = new mongoose.Schema({
 
 const Service = mongoose.model('Service', ServiceSchema);
 
+
+function getAllServices()
+{
+    return Service.find({}).exec();
+}
+
 module.exports = Service;
+module.exports = { Service,getAllServices};

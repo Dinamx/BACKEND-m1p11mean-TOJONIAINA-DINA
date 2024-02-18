@@ -17,6 +17,7 @@ var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var testRouteur = require('./routes/tests');
 var employeRouter = require('./routes/employe');
+var serviceRouter = require('./routes/service_router');
 
 
 var app = express();
@@ -25,18 +26,6 @@ var app = express();
 //Connecte la base connection mongo
 connectToDb();
 
-// mongoose.connect('mongodb+srv://poseidon:poseidon@poseidon.jpmfmcc.mongodb.net/?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true})
-
-
-// const mongoString = 'mongodb+srv://poseidon:poseidon@poseidon.jpmfmcc.mongodb.net/?retryWrites=true&w=majority';
-//
-// MongoClient.connect(mongoString).then(
-//     client => {
-//       console.log('Connected to Database')
-//         let db = client.db('poseidon')
-//       // quotesCollection = db.collection('quotes')
-//     }
-// )
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -58,9 +47,12 @@ app.use('/login', loginRouter);
 //Pour tester des trucs
 app.use('/test', testRouteur);
 
-
 // employe 
 app.use('/employes',employeRouter);
+
+// service 
+app.use('/services',serviceRouter);
+
 
 console.log('http://localhost:3000/')
 
