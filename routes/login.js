@@ -61,33 +61,6 @@ router.get('/users', function(req, res, next) {
 });
 
 
-//Forme du json a envoyer
-// {
-//     "email": "example2email.com",
-//     "password": "password"
-// }
-
-// router.post('/users', function(req, res, next) {
-//     const { email, password } = req.body;
-//     Utilisateur.findOne({ email, password })
-//         .then(user => {
-//             if (user) {
-//                 res.json(user.type_user);
-//             } else {
-//                 res.status(404).send('User not found');
-//             }
-//         })
-//         .catch(error => console.error('Une erreur s\'est produite lors de la recherche de l\'utilisateur: ', error));
-// });
-
-router.get('/users', function(req, res, next) {
-    getAllUsers().then(users => {
-      res.json(users);
-    }).catch(error => console.error('Une erreur s\'est produite lors de la récupération des utilisateurs: ', error));
-});
-  
-
-
 //Maintenant fais moi un /Users qui me retourne la liste des users
 
 module.exports = router;

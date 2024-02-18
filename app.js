@@ -16,7 +16,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var testRouteur = require('./routes/tests');
-
+var employeRouter = require('./routes/employe');
 
 
 var app = express();
@@ -55,10 +55,12 @@ app.use('/users', usersRouter);
 //Login
 app.use('/login', loginRouter);
 
-
 //Pour tester des trucs
 app.use('/test', testRouteur);
 
+
+// employe 
+app.use('/employes',employeRouter);
 
 console.log('http://localhost:3000/')
 
