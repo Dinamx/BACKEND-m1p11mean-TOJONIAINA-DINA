@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 
 
-
 const { Utilisateur, getAllUsers } = require("./objects/utilisateur");
 const sendEmail = require("./helpers/mailSender");
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
   getAllUsers().then(users => {
     console.log(users);
     res.json(users);

@@ -7,6 +7,11 @@ var logger = require('morgan');
 // const MongoClient = require('mongodb').MongoClient
 const mongoose = require('mongoose');
 const connectToDb = require('./routes/connection');
+const cors  = require('cors');
+const bodyParser = require('body-parser');
+
+
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
@@ -37,21 +42,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(bodyParser.json());
+app.use(cors());
 
 
 
 app.use('/', indexRouter);
+
 // Ato no ahazoana ny users rehetra
 app.use('/users', usersRouter);
-//Login
 
+//Login
 app.use('/login', loginRouter);
+
 
 //Pour tester des trucs
 app.use('/test', testRouteur);
-
-
 
 
 console.log('http://localhost:3000/')
