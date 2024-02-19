@@ -5,6 +5,19 @@ const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp } = require("
 const { getAllEmploye } = require("./objects/utilisateur");
 
 
+router.put('/update_rdv/:id', function(req, res, next) {
+    const rdvId = req.params.id;
+    Rendezvous.updateOne({ _id: rdvId }, { prixpaye : req.body.prixpaye , duree : req.body.duree })
+        .then(() => {
+            res.status(200).json({ message: 'Modification avec succès.' });
+        })
+        .catch(error => {
+            console.error('Une erreur s\'est produite lors de la mise à jour du rendez-vous : ', error);
+            res.status(500).json({ message: 'Une erreur s\'est produite lors de la mise à jour du rendez-vous.' });
+        });
+});
+
+
 router.put('/terminer_rendez_vous/:id', function(req, res, next) {
     const rdvId = req.params.id;
 
