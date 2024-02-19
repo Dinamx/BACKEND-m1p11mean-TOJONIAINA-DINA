@@ -7,7 +7,10 @@ const RendezvousSchema = new mongoose.Schema({
     client: String,
     employe: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
     prixpaye: Number,
-    comissionemploye: Number
+    comissionemploye: Number,
+    duree: Number,
+    comission: {type: Number, min: 0, max: 100 },
+    etat_rdv: { type: Number, enum: [0,1] }
 });
 
 const Rendezvous = mongoose.model('Rendezvous', RendezvousSchema);

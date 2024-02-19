@@ -2,12 +2,11 @@ var express = require('express');
 var router = express.Router();
 
 const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp } = require("./objects/rendezvous");
-const { Service , getCommissionService } = require("./objects/service");
+const { Service , getCommissionService , getDuree , getCommission } = require("./objects/service");
 
 
 router.get('/rendezvous/historique', function(req, res, next) {
     const token = req.headers.authorization;
-    
     if (!token) {
         return res.status(401).json({ message: 'Token non fourni.' });
     }
@@ -29,6 +28,8 @@ router.post('/rendezvous/add', async function(request, response, next) {
             return response.status(401).json({ message: 'Token non fourni.' });
         }
         const CommissionService = await getCommissionService(request.body.idservice, request.body.prixpaye);
+        const dureeService = await getDuree(request.body.idservice);
+        const comissionServicePourcentage = await getCommission(request.body.idservice);
 
         let rendezvous = new Rendezvous({
              date_heure: request.body.date_heure,
@@ -36,7 +37,10 @@ router.post('/rendezvous/add', async function(request, response, next) {
              client: token,
              employe: request.body.idemploye,
              prixpaye: request.body.prixpaye,
-             comissionemploye: CommissionService
+             comissionemploye: CommissionService,
+             duree: dureeService,
+             comission: comissionServicePourcentage,
+             etat_rdv:0
              });
     
         rendezvous.save().then(() => {

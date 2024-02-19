@@ -41,5 +41,18 @@ async function getCommissionService(idservice, prix_paye) {
     }
 }
 
+async function getDuree(idservice){
+    try {
+        const service = await Service.findById(idservice).exec();
+        if (!service) {
+            throw new Error('Service non trouvé');
+        }
+        return service.durée; 
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération de la durree du service: ', error);
+        throw error; 
+    }
+}
+
 module.exports = Service;
-module.exports = { Service,getAllServices,getCommissionService};
+module.exports = { Service,getAllServices,getCommissionService,getDuree,getCommission};
