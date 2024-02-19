@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+
 
 const UtilisateurSchema = new mongoose.Schema({
     // _id: mongoose.Schema.Types.ObjectId,
@@ -20,6 +22,7 @@ function getAllEmploye() {
     return Utilisateur.find({ type_user: 'employe' }).exec();
 }
 
+
 //Client Manager Employe
 
 async function getUser(email, password) {
@@ -37,14 +40,5 @@ async function getUser(email, password) {
 }
 
 
-
-// Amena email sy password dia mamerina oe inona le type (Client, na manager na employe no type)
-function getTypeUser(){
-
-}
-
-
-
-
 module.exports = Utilisateur;
-module.exports = { Utilisateur, getAllUsers , getAllEmploye };
+module.exports = { Utilisateur, getAllUsers , getAllEmploye};

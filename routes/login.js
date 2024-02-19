@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 var router = express.Router();
 const crypto = require('crypto');
 
+
 const { Utilisateur, getAllUsers } = require("./objects/utilisateur");
 
 
@@ -20,7 +21,7 @@ router.post('/login', function(req, res, next) {
                 return res.status(401).json({ message: 'Login failed: Email ou mot de passe incorrect.' });
             }
             const token = jwt.sign({ email: user.email }, 'apkmean', { expiresIn: '1h' });
-            res.status(200).json({ message: 'Login successful.', token: token });
+            res.status(200).json({ message: 'Login successful.', userId: user._id , token: token });
         })
         .catch(error => {
             console.error('An error occurred while logging in: ', error);
@@ -29,25 +30,32 @@ router.post('/login', function(req, res, next) {
 });
 
 
-router.post('/signup', function(request,response) {
-    // Ici, vous pouvez ajouter le code pour traiter la demande d'inscription.
-    console.log("Yoo")
+router.post('/signup', function(request, response) {
+    const { email, password, type_user } = request.body;
+
+    // Validation des entrées utilisateur (non illustrée ici)
+
+    // Hachage du mot de passe
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
     let utilisateur = new Utilisateur({
-        email: request.body.email,
-        password: request.body.password,
-        type_user: request.body.type_user
+        email: email,
+        password: hashedPassword,
+        type_user: type_user
     });
+
     utilisateur.save()
         .then(() => {
-            console.log('SIGNUP , Done Be ')
+            console.log('SIGNUP , Done Be ');
             const token = jwt.sign({ email: utilisateur.email }, 'apkmean', { expiresIn: '1h' });
-            // Envoyer le token dans la réponse
-            response.json({ message: 'Signup request received', token: token });
+            // Envoyer l'ID de l'utilisateur et le token dans la réponse
+            response.json({ message: 'Signup request received', userId: utilisateur._id, token: token });
         })
-        .catch(error => console.error('An error occurred while saving the utilisateur: ', error));
-    console.log("Signup and shit")
+        .catch(error => {
+            console.error('An error occurred while saving the utilisateur: ', error);
+            response.status(500).json({ message: 'Une erreur est survenue lors de l\'inscription.' });
+        });
 });
-
 
 
 router.get('/users', function(req, res, next) {

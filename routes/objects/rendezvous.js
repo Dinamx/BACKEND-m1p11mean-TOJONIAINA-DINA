@@ -13,10 +13,6 @@ const RendezvousSchema = new mongoose.Schema({
 const Rendezvous = mongoose.model('Rendezvous', RendezvousSchema);
 
 
-function getAllRendezVous()
-{
-    return Rendezvous.find({ }).exec();
-}
 
 function getHistoriqueRendezVous(idclient)
 {
@@ -41,4 +37,5 @@ function getAllRendezVousEmp(id_employe) {
     }
 }
 
-module.exports = { Rendezvous, getAllRendezVous , getHistoriqueRendezVous };
+
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp };
