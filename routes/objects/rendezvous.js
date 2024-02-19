@@ -12,6 +12,11 @@ const RendezvousSchema = new mongoose.Schema({
 
 const Rendezvous = mongoose.model('Rendezvous', RendezvousSchema);
 
+function getAllRendezVous()
+{
+    return Rendezvous.find({}).exec();
+}
+
 function getAllRendezVous(id_employe) {
     if (id_employe) {
         return Rendezvous.find({ employe: id_employe }).exec();

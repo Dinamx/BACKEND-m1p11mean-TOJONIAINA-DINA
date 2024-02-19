@@ -18,6 +18,7 @@ var loginRouter = require('./routes/login');
 var testRouteur = require('./routes/tests');
 var employeRouter = require('./routes/employe');
 var serviceRouter = require('./routes/service_router');
+var clientRouter = require('./routes/client');
 
 
 var app = express();
@@ -33,8 +34,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(cors());
-
-
 
 app.use('/', indexRouter);
 
@@ -52,6 +51,9 @@ app.use('/employes',employeRouter);
 
 // service 
 app.use('/services',serviceRouter);
+
+// client 
+app.use('/client',clientRouter);
 
 
 console.log('http://localhost:3000/')
