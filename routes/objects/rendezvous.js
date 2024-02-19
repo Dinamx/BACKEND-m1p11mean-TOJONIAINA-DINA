@@ -5,24 +5,40 @@ const RendezvousSchema = new mongoose.Schema({
     date_heure: Date,
     service: String,
     client: String,
-    employe: String,
+    employe: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
     prixpaye: Number,
     comissionemploye: Number
 });
 
 const Rendezvous = mongoose.model('Rendezvous', RendezvousSchema);
 
+
 function getAllRendezVous()
 {
-    return Rendezvous.find({}).exec();
+    return Rendezvous.find({ }).exec();
 }
 
-function getAllRendezVous(id_employe) {
+function getHistoriqueRendezVous(idclient)
+{
+    return Rendezvous.find({ client: idclient }).populate({
+        path: 'employe',
+        select: 'email',
+        match: { type_user: 'employe' }
+    })
+    .exec();
+}
+
+function getAllRendezVousEmp(id_employe) {
     if (id_employe) {
-        return Rendezvous.find({ employe: id_employe }).exec();
+        return Rendezvous.find({ employe: id_employe }).populate({
+            path: 'employe',
+            select: 'email',
+            match: { type_user: 'employe' }
+        })
+        .exec();
     } else {
         return Rendezvous.find({}).exec();
     }
 }
 
-module.exports = { Rendezvous, getAllRendezVous };
+module.exports = { Rendezvous, getAllRendezVous , getHistoriqueRendezVous };
