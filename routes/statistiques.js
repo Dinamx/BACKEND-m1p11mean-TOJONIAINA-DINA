@@ -2,7 +2,25 @@ var express = require('express');
 var router = express.Router();
 const moment = require('moment');
 
-var { getTemps_moyen_travail , getStatReservation } = require("./objects/rendezvous");
+var { getTemps_moyen_travail , getStatReservation , getChiffreAffaire } = require("./objects/rendezvous");
+
+router.get('/chiffre_affaire', function(req, res, next) {
+    const date = new Date();
+    const mois = date.getMonth() + 1; 
+    const debutJourMois = new Date(date.getFullYear(), mois - 1, 1); 
+
+    debutJourMois.setDate(debutJourMois.getDate() + 1); 
+    const debutJourMoisSuivant = new Date(date.getFullYear(), mois, 1);
+    const finJourMois = new Date(debutJourMoisSuivant.getTime() - 1);
+    const anneeCourante = new Date().getFullYear();    
+    getChiffreAffaire(debutJourMois,finJourMois,anneeCourante).then(chiffreAffaires => {
+        res.json(chiffreAffaires);
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des donnees.' });
+    });
+});
 
 router.post('/search_reservation', function(req, res, next) {
     const date = new Date();
@@ -21,7 +39,6 @@ router.post('/search_reservation', function(req, res, next) {
         res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des donnees.' });
     });
 });
-
 
 router.get('/reservation', function(req, res, next) {
     const currentDate = moment().format('YYYY-MM-DD');

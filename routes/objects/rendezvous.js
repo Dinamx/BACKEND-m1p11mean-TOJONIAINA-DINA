@@ -171,5 +171,46 @@ async function getStatReservation(debutJourMois,finJourMois,date) {
     }
 }
 
+async function getChiffreAffaire(debutJourMois, finJourMois,anneeCourante) {
+    try {
+        const totalPrixPaye = await Rendezvous.aggregate([
+            {
+                $match: { 
+                    etat_rdv: 1, 
+                    date_heure: {
+                        $gte: debutJourMois,
+                        $lt: finJourMois
+                    }
+                }
+            },
+            {
+                $addFields: { 
+                    annee: { $dateToString: { format: "%Y", date: "$date_heure" } }
+                }
+            },
+            {
+                $match: { 
+                    annee: anneeCourante.toString() 
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total_prixpaye: { $sum: '$prixpaye' }
+                }
+            }
+        ]);
 
-module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation };
+        if (totalPrixPaye.length > 0) {
+            return totalPrixPaye[0].total_prixpaye;
+        } else {
+            return 0; 
+        }
+    } catch (error) {
+        throw new Error('Une erreur s\'est produite lors du calcul du chiffre d\'Affaire : ' + error.message);
+    }
+}
+
+
+
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire };
