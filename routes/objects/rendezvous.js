@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const RendezvousSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     date_heure: Date,
-    service: String,
+    service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
     client: String,
     employe: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
     prixpaye: Number,
@@ -40,5 +41,20 @@ function getAllRendezVousEmp(id_employe) {
     }
 }
 
+function getTaskDaily(id_employe,currentDate) {
+    const formattedCurrentDate = moment(currentDate).format('YYYY-MM-DD');
+    return Rendezvous.find({ 
+        employe: id_employe, 
+        date_heure: { 
+            $gte: new Date(formattedCurrentDate), 
+            $lt: moment(formattedCurrentDate).add(1, 'days').toDate() 
+        } 
+    })
+    .populate({
+        path: 'service',
+        select: 'description'
+    })
+    .exec();
+}
 
-module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp };
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily };

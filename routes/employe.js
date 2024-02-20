@@ -1,10 +1,23 @@
 var express = require('express');
 var router = express.Router();
+const moment = require('moment');
 
-const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp } = require("./objects/rendezvous");
+const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily } = require("./objects/rendezvous");
 const { getAllEmploye } = require("./objects/utilisateur");
 
+router.get('/task_daily/:emp_id', function(req, res, next) {
+    const empId = req.params.emp_id;
+    const currentDate = moment().format('YYYY-MM-DD');
+    getTaskDaily(empId,currentDate).then(tasks => {
+        res.json(tasks);
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des donnees.' });
+    });
+});
 
+  
 router.put('/update_rdv/:id', function(req, res, next) {
     const rdvId = req.params.id;
     Rendezvous.updateOne({ _id: rdvId }, { prixpaye : req.body.prixpaye , duree : req.body.duree })
