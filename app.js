@@ -20,6 +20,7 @@ var employeRouter = require('./routes/employe');
 var serviceRouter = require('./routes/service_router');
 var clientRouter = require('./routes/client');
 var statRouter = require('./routes/statistiques');
+var depenseRouter = require('./routes/depense_router');
 
 
 var app = express();
@@ -55,6 +56,9 @@ app.use('/services',serviceRouter);
 
 // client 
 app.use('/client',clientRouter);
+
+// depense
+app.use('/depenses',depenseRouter);
 
 // statistiques 
 app.use('/statistiques',statRouter);

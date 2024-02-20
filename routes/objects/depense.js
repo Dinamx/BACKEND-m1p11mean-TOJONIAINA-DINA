@@ -9,6 +9,9 @@ const DepenseSchema = new mongoose.Schema({
 
 const Depense = mongoose.model('Depense', DepenseSchema);
 
+function getAllDepenses()
+{
+    return Depense.find({}).exec();
+}
 
-
-module.exports = Depense;
+module.exports = { Depense,getAllDepenses};
