@@ -134,5 +134,42 @@ async function getTemps_moyen_travail(debutMois, finMois) {
     }
 }
 
+function getConditionReservation(debutJourMois,finJourMois,date,etat)
+{
+    const queryConditions = { etat_rdv: etat };
 
-module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail };
+    if (debutJourMois && finJourMois) {
+         queryConditions.$or = [
+            { date_heure: { $gte: debutJourMois, $lt: finJourMois } }
+        ];
+    }
+
+    if (date) {
+        const formattedDate = moment(date).format('YYYY-MM-DD');
+        const formattedNextDate = moment(formattedDate).add(1, 'days').toDate();
+        queryConditions.$or = queryConditions.$or || [];
+        queryConditions.$or.push({ date_heure: { $gte: new Date(formattedDate), $lt: formattedNextDate } });
+    }
+    return queryConditions;
+}
+
+async function getStatReservation(debutJourMois,finJourMois,date) {
+    try {
+        const PrisesConditions = getConditionReservation(debutJourMois,finJourMois,date,1);
+        const NonPrisesConditions = getConditionReservation(debutJourMois,finJourMois,date,0);
+        
+        const prises = await Rendezvous.countDocuments(PrisesConditions);
+
+        const nonPrises = await Rendezvous.countDocuments(NonPrisesConditions);
+
+        const global = prises + nonPrises;
+
+        return { prises, nonPrises, global };
+
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors du calcul des statistiques de réservation :', error);
+    }
+}
+
+
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation };
