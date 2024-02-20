@@ -176,7 +176,7 @@ async function getChiffreAffaire(debutJourMois, finJourMois,anneeCourante) {
         const totalPrixPaye = await Rendezvous.aggregate([
             {
                 $match: { 
-                    etat_rdv: 1, 
+                    etat_rdv: 0, 
                     date_heure: {
                         $gte: debutJourMois,
                         $lt: finJourMois
