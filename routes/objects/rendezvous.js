@@ -58,19 +58,30 @@ function getTaskDaily(id_employe,currentDate) {
     .exec();
 }
 
-function getRdvEmp(debutMois,finMois) {
+function getRdvEmp(debutMois,finMois,date) {
     try {
+        const formattedDate = moment(date).format('YYYY-MM-DD');
         return Rendezvous.find({
             etat_rdv: 1,
-            date_heure: {
-                $gte: debutMois,
-                $lt: finMois
-            }
+            $or: [
+                {
+                    date_heure: {
+                        $gte: debutMois,
+                        $lt: finMois
+                    }
+                },
+                {
+                    date_heure: {
+                        $gte: new Date(formattedDate),
+                        $lt: moment(formattedDate).add(1, 'days').toDate()
+                    }
+                }
+            ]
         }).populate({
             path: 'employe',
             select: 'email',
             match: { type_user: 'employe' }
-        }).exec();
+        }).exec();       
     } catch (error) {
         throw new Error('Une erreur s\'est roduite lors de la récupération des rendez-vous pour le mois en cours : ' + error.message);
     }
