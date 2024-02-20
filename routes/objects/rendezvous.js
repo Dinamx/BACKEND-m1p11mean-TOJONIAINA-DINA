@@ -62,7 +62,7 @@ function getRdvEmp(debutMois,finMois,date) {
     try {
         const formattedDate = moment(date).format('YYYY-MM-DD');
         return Rendezvous.find({
-            etat_rdv: 1,
+            etat_rdv: 0,
             $or: [
                 {
                     date_heure: {
