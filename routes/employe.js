@@ -5,6 +5,20 @@ const moment = require('moment');
 const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily } = require("./objects/rendezvous");
 const { getAllEmploye } = require("./objects/utilisateur");
 
+
+router.post('/search_task_daily', function(req, res, next) {
+    const empId = req.body.emp_id;
+    const currentDate = req.body.date;
+    getTaskDaily(empId,currentDate).then(tasks => {
+        res.json(tasks);
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des donnees.' });
+    });
+});
+
+
 router.get('/task_daily/:emp_id', function(req, res, next) {
     const empId = req.params.emp_id;
     const currentDate = moment().format('YYYY-MM-DD');
