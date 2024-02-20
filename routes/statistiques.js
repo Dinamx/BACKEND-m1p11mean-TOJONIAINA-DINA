@@ -4,6 +4,25 @@ const moment = require('moment');
 
 var { getTemps_moyen_travail , getStatReservation } = require("./objects/rendezvous");
 
+router.post('/search_reservation', function(req, res, next) {
+    const date = new Date();
+    const date_search = req.body.date;
+    const mois = req.body.mois; 
+    const debutJourMois = new Date(date.getFullYear(), mois - 1, 1); 
+    debutJourMois.setDate(debutJourMois.getDate() + 1); 
+    const debutJourMoisSuivant = new Date(date.getFullYear(), mois, 1);
+    const finJourMois = new Date(debutJourMoisSuivant.getTime() - 1);
+
+    getStatReservation(debutJourMois,finJourMois,date_search).then(reservations => {
+        res.json(reservations);
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des donnees.' });
+    });
+});
+
+
 router.get('/reservation', function(req, res, next) {
     const currentDate = moment().format('YYYY-MM-DD');
     const date = new Date();
