@@ -19,6 +19,7 @@ var testRouteur = require('./routes/tests');
 var employeRouter = require('./routes/employe');
 var serviceRouter = require('./routes/service_router');
 var clientRouter = require('./routes/client');
+var statRouter = require('./routes/statistiques');
 
 
 var app = express();
@@ -55,6 +56,8 @@ app.use('/services',serviceRouter);
 // client 
 app.use('/client',clientRouter);
 
+// statistiques 
+app.use('/statistiques',statRouter);
 
 console.log('http://localhost:3000/')
 

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
+const { Utilisateur } = require("./utilisateur");
 
 const RendezvousSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
@@ -57,4 +58,70 @@ function getTaskDaily(id_employe,currentDate) {
     .exec();
 }
 
-module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily };
+function getRdvEmp(debutMois,finMois) {
+    try {
+        return Rendezvous.find({
+            etat_rdv: 1,
+            date_heure: {
+                $gte: debutMois,
+                $lt: finMois
+            }
+        }).populate({
+            path: 'employe',
+            select: 'email',
+            match: { type_user: 'employe' }
+        }).exec();
+    } catch (error) {
+        throw new Error('Une erreur s\'est roduite lors de la récupération des rendez-vous pour le mois en cours : ' + error.message);
+    }
+}
+
+
+async function getTemps_moyen_travail(debutMois, finMois) {
+    try {
+        const rendezvous = await getRdvEmp(debutMois, finMois);
+        const tempsTravailParEmploye = {};
+
+        // Calculer la durée totale de travail et le nombre de rendez-vous pour chaque employé
+        rendezvous.forEach(rdv => {
+            // Vérifier si l'employé existe déjà dans l'objet tempsTravailParEmploye
+            if (!tempsTravailParEmploye[rdv.employe.email]) {
+                tempsTravailParEmploye[rdv.employe.email] = {
+                    total_duree: 0,
+                    nombre_rendezvous: 0
+                };
+            }
+            // Ajouter la durée du rendez-vous à la durée totale de travail de l'employé
+            tempsTravailParEmploye[rdv.employe.email].total_duree += rdv.duree;
+            tempsTravailParEmploye[rdv.employe.email].nombre_rendezvous++;
+        });
+
+        // Récupérer tous les employés de la base de données
+        const tousLesEmployes = await Utilisateur.find({ type_user: 'employe' });
+
+        // Ajouter les employés absents dans l'objet tempsTravailParEmploye avec un temps moyen de 0
+        tousLesEmployes.forEach(employe => {
+            const email = employe.email;
+            if (!tempsTravailParEmploye[email]) {
+                tempsTravailParEmploye[email] = {
+                    total_duree: 0,
+                    nombre_rendezvous: 0
+                };
+            }
+        });
+
+        // Calculer le temps moyen de travail pour chaque employé
+        const tempsMoyenParEmploye = {};
+        for (const email in tempsTravailParEmploye) {
+            const { total_duree, nombre_rendezvous } = tempsTravailParEmploye[email];
+            tempsMoyenParEmploye[email] = nombre_rendezvous === 0 ? 0 : total_duree / nombre_rendezvous;
+        }
+
+        return tempsMoyenParEmploye;
+    } catch (error) {
+        throw new Error('Une erreur s\'est produite lors du calcul du temps moyen de travail pour le mois en cours : ' + error.message);
+    }
+}
+
+
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail };

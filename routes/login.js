@@ -32,15 +32,10 @@ router.post('/login', function(req, res, next) {
 
 router.post('/signup', function(request, response) {
     const { email, password, type_user } = request.body;
-
-    // Validation des entrées utilisateur (non illustrée ici)
-
-    // Hachage du mot de passe
-    const hashedPassword = bcrypt.hashSync(password, 10);
-
+    
     let utilisateur = new Utilisateur({
         email: email,
-        password: hashedPassword,
+        password: password,
         type_user: type_user
     });
 
@@ -48,7 +43,6 @@ router.post('/signup', function(request, response) {
         .then(() => {
             console.log('SIGNUP , Done Be ');
             const token = jwt.sign({ email: utilisateur.email }, 'apkmean', { expiresIn: '1h' });
-            // Envoyer l'ID de l'utilisateur et le token dans la réponse
             response.json({ message: 'Signup request received', userId: utilisateur._id, token: token });
         })
         .catch(error => {
