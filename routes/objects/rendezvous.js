@@ -250,4 +250,4 @@ async function getTotalCommission(debutJourMois, finJourMois,anneeCourante) {
 }
 
 
-module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire };
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire , getTotalCommission };
