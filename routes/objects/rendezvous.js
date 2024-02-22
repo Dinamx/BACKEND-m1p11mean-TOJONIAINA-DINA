@@ -169,7 +169,6 @@ async function getStatReservation(debutJourMois, finJourMois) {
     }
 }
 
-
 async function getChiffreAffaire(debutJourMois, finJourMois,anneeCourante) {
     try {
         const totalPrixPaye = await Rendezvous.aggregate([
@@ -210,6 +209,45 @@ async function getChiffreAffaire(debutJourMois, finJourMois,anneeCourante) {
     }
 }
 
+async function getTotalCommission(debutJourMois, finJourMois,anneeCourante) {
+    try {
+        const total_commission = await Rendezvous.aggregate([
+            {
+                $match: { 
+                    etat_rdv: 0, 
+                    date_heure: {
+                        $gte: debutJourMois,
+                        $lt: finJourMois
+                    }
+                }
+            },
+            {
+                $addFields: { 
+                    annee: { $dateToString: { format: "%Y", date: "$date_heure" } }
+                }
+            },
+            {
+                $match: { 
+                    annee: anneeCourante.toString() 
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total_commission: { $sum: '$comissionemploye' }
+                }
+            }
+        ]);
+
+        if (total_commission.length > 0) {
+            return total_commission[0].total_commission;
+        } else {
+            return 0; 
+        }
+    } catch (error) {
+        throw new Error('Une erreur s\'est produite lors du calcul du chiffre d\'Affaire : ' + error.message);
+    }
+}
 
 
 module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire };
