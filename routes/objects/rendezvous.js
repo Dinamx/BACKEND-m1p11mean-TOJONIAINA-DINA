@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
 const { Utilisateur } = require("./utilisateur");
+var { getTotalDepense  } = require("./depense");
 
 const RendezvousSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
@@ -174,7 +175,7 @@ async function getChiffreAffaire(debutJourMois, finJourMois,anneeCourante) {
         const totalPrixPaye = await Rendezvous.aggregate([
             {
                 $match: { 
-                    etat_rdv: 0, 
+                    etat_rdv: 1, 
                     date_heure: {
                         $gte: debutJourMois,
                         $lt: finJourMois
@@ -214,7 +215,7 @@ async function getTotalCommission(debutJourMois, finJourMois,anneeCourante) {
         const total_commission = await Rendezvous.aggregate([
             {
                 $match: { 
-                    etat_rdv: 0, 
+                    etat_rdv: 1, 
                     date_heure: {
                         $gte: debutJourMois,
                         $lt: finJourMois
@@ -250,4 +251,19 @@ async function getTotalCommission(debutJourMois, finJourMois,anneeCourante) {
 }
 
 
-module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire , getTotalCommission };
+async function getStatBenefice(debutJourMois, finJourMois,anneeCourante) {
+    try {
+    const chiffre_affaire = await getChiffreAffaire(debutJourMois,finJourMois,anneeCourante);
+    const Totaldepense = await getTotalDepense(debutJourMois,finJourMois,anneeCourante);
+    const TotalCommission = await getTotalCommission(debutJourMois,finJourMois,anneeCourante);
+    const depense = Totaldepense + TotalCommission;
+    const benefice = chiffre_affaire - depense;
+    return benefice;
+    } 
+    catch (error) {
+        throw new Error('Une erreur s\'est produite lors du calcul du chiffre d\'Affaire : ' + error.message);
+    }
+}
+
+
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire , getTotalCommission , getStatBenefice };
