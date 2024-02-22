@@ -71,7 +71,7 @@ router.get('/reservation', function(req, res, next) {
     const debutJourMoisSuivant = new Date(date.getFullYear(), mois, 1);
     const finJourMois = new Date(debutJourMoisSuivant.getTime() - 1);
         
-    getStatReservation(debutJourMois,finJourMois,null).then(reservations => {
+    getStatReservation(debutJourMois,finJourMois).then(reservations => {
         res.json(reservations);
     })
     .catch(error => {

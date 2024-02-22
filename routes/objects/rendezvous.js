@@ -134,42 +134,41 @@ async function getTemps_moyen_travail(debutMois, finMois) {
     }
 }
 
-function getConditionReservation(debutJourMois,finJourMois,date,etat)
-{
-    const queryConditions = { etat_rdv: etat };
-
-    if (debutJourMois && finJourMois) {
-         queryConditions.$or = [
-            { date_heure: { $gte: debutJourMois, $lt: finJourMois } }
-        ];
-    }
-
-    if (date) {
-        const formattedDate = moment(date).format('YYYY-MM-DD');
-        const formattedNextDate = moment(formattedDate).add(1, 'days').toDate();
-        queryConditions.$or = queryConditions.$or || [];
-        queryConditions.$or.push({ date_heure: { $gte: new Date(formattedDate), $lt: formattedNextDate } });
-    }
-    return queryConditions;
-}
-
-async function getStatReservation(debutJourMois,finJourMois,date) {
+async function getStatReservation(debutJourMois, finJourMois) {
     try {
-        const PrisesConditions = getConditionReservation(debutJourMois,finJourMois,date,1);
-        const NonPrisesConditions = getConditionReservation(debutJourMois,finJourMois,date,0);
-        
-        const prises = await Rendezvous.countDocuments(PrisesConditions);
+        // Initialiser un tableau pour stocker les résultats
+        const result = [];
 
-        const nonPrises = await Rendezvous.countDocuments(NonPrisesConditions);
+        // Créer un objet pour stocker les dates avec leur nombre de réservations
+        const reservationsParDate = {};
 
-        const global = prises + nonPrises;
+        // Obtenir toutes les réservations pour le mois en cours
+        const reservations = await Rendezvous.find({ 
+            date_heure: { $gte: debutJourMois, $lt: finJourMois } 
+        });
 
-        return { prises, nonPrises, global };
+        // Compter le nombre de réservations pour chaque date
+        reservations.forEach(reservation => {
+            const dateString = reservation.date_heure.toISOString().split('T')[0];
+            reservationsParDate[dateString] = (reservationsParDate[dateString] || 0) + 1;
+        });
 
+        // Parcourir toutes les dates du mois et ajouter le nombre de réservations à chaque date
+        let currentDate = new Date(debutJourMois);
+        const endDate = new Date(finJourMois);
+        while (currentDate < endDate) {
+            const dateString = currentDate.toISOString().split('T')[0];
+            const totalReservations = reservationsParDate[dateString] || 0;
+            result.push({ date: dateString, reservations: totalReservations });
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return result;
     } catch (error) {
         console.error('Une erreur s\'est produite lors du calcul des statistiques de réservation :', error);
     }
 }
+
 
 async function getChiffreAffaire(debutJourMois, finJourMois,anneeCourante) {
     try {
