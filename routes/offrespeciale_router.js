@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 const { Offrespeciale , getAllOffres } = require("./objects/offrespeciale");
+const sendEmail = require("./helpers/mailSender");
+
 
 router.get('/', function(req, res, next) {
     getAllOffres().then(offres => {
@@ -10,6 +12,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/add', function(request,response) {
+
     let offrespeciale = new Offrespeciale({
         idclient: request.body.idclient,
         contenu: request.body.contenu,
@@ -19,6 +22,16 @@ router.post('/add', function(request,response) {
     offrespeciale.save()
         .then(() => {
             response.json({ message: 'Offrespeciale added with success' , status: '200'});
+            
+            var now = new Date();
+            var targetDate = offrespeciale.date_heure_envoi;
+            var diffInMilliseconds = targetDate - now;
+          
+            setTimeout(function() {
+              sendEmail(offrespeciale.mail_envoi,targetDate,offrespeciale.contenu);
+            }, diffInMilliseconds);
+          
+            response.status(201).send('Email will be sent at the specified date and time.');
         })
         .catch(error => console.error('An error occurred while saving an offrespeciale: ', error));
 })

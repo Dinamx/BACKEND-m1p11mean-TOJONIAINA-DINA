@@ -32,7 +32,7 @@ function sendEmail(receiverMail, dateToSend, mailContent) {
     let mailOptions = {
         from: 'recrutementtana.pro@gmail.com',
         to: receiverMail,
-        subject: `Email to be sent on ${dateToSend}`,
+        subject: `Offre spéciale`,
         text: mailContent
     };
 
