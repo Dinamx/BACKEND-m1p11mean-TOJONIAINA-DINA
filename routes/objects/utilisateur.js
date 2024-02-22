@@ -23,6 +23,10 @@ function getAllEmploye() {
 }
 
 
+function getAllClient() {
+    return Utilisateur.find({ type_user: 'client' }).exec();
+}
+
 //Client Manager Employe
 
 async function getUser(email, password) {
@@ -41,4 +45,4 @@ async function getUser(email, password) {
 
 
 module.exports = Utilisateur;
-module.exports = { Utilisateur, getAllUsers , getAllEmploye};
+module.exports = { Utilisateur, getAllUsers , getAllEmploye , getAllClient};
