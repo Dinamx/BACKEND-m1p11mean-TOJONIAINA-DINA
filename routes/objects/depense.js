@@ -54,4 +54,17 @@ async function getTotalDepense(debutJourMois, finJourMois,anneeCourante) {
     }
 }
 
-module.exports = { Depense,getAllDepenses,getTotalDepense};
+async function getStatDepense(debutJourMois, finJourMois,anneeCourante) {
+    try {
+        const TotalDepense = await getTotalDepense(debutJourMois,finJourMois,anneeCourante);
+        const TotalCommission = await getTotalCommission(debutJourMois,finJourMois,anneeCourante);
+        const depenseGlobale = TotalDepense + TotalCommission;
+        return depenseGlobale;
+    } catch (error) {
+        throw new Error('Une erreur s\'est produite lors du calcul du chiffre d\'Affaire : ' + error.message);
+    }
+}
+
+
+
+module.exports = { Depense,getAllDepenses,getTotalDepense , getStatDepense};

@@ -32,7 +32,7 @@ async function getCommission(idService) {
 async function getCommissionService(idservice, prix_paye) {
     try {
         const commission = await getCommission(idservice);    
-        const result = prix_paye - ((prix_paye * commission)/100);
+        const result = (prix_paye * commission)/100;
         console.log(result);
         return result;
     } catch (error) {

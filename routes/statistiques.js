@@ -4,6 +4,8 @@ const moment = require('moment');
 
 var { getTemps_moyen_travail , getStatReservation , getChiffreAffaire } = require("./objects/rendezvous");
 
+var { getStatDepense  } = require("./objects/depense");
+
 router.post('/search_chiffre_affaire', function(req, res, next) {
     const annee = req.body.annee;
     const mois = req.body.mois; 
