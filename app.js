@@ -21,7 +21,7 @@ var serviceRouter = require('./routes/service_router');
 var clientRouter = require('./routes/client');
 var statRouter = require('./routes/statistiques');
 var depenseRouter = require('./routes/depense_router');
-
+var offrespecialeRouter = require('./routes/offrespeciale_router');
 
 var app = express();
 
@@ -62,6 +62,9 @@ app.use('/depenses',depenseRouter);
 
 // statistiques 
 app.use('/statistiques',statRouter);
+
+// offre speciale
+app.use('/offrespeciales',offrespecialeRouter);
 
 console.log('http://localhost:3000/')
 
