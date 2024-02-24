@@ -34,7 +34,7 @@ async function getPourcentageOffre(idclient, idservice) {
                                 .limit(1);
 
         if (!offre) {
-            return 1; // Si aucune offre n'est trouvée, retourner 1
+            return 0; 
         }
 
         const dateHeureEnvoi = moment(offre.date_heure_envoi);
@@ -43,11 +43,11 @@ async function getPourcentageOffre(idclient, idservice) {
         if (currentDate.isBetween(dateHeureEnvoi, dateFin)) {
             return offre.pourcentage; // Si la date actuelle est dans l'intervalle de validité de l'offre, retourner le pourcentage
         } else {
-            return 1; // Sinon, retourner 1
+            return 0; 
         }
     } catch (error) {
         console.error('Une erreur s\'est produite lors de la recherche de l\'offre spéciale : ', error);
-        return 1; // En cas d'erreur, retourner 1 par défaut
+        return 0; 
     }
 }
 

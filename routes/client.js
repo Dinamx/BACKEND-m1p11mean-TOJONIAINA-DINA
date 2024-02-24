@@ -4,6 +4,7 @@ var router = express.Router();
 const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp } = require("./objects/rendezvous");
 const { Service , getCommissionService , getDuree , getCommission } = require("./objects/service");
 const { getAllClient } = require("./objects/utilisateur");
+const { getPourcentageOffre } = require("./objects/offrespeciale");
 
 
 router.get('/', function(req, res, next) {
@@ -32,16 +33,19 @@ router.get('/rendezvous/historique/:id', function(req, res, next) {
 
 router.post('/rendezvous/add', async function(request, response, next) {
     try {
-        const CommissionService = await getCommissionService(request.body.idservice, request.body.prixpaye);
+        const pourcentage = await getPourcentageOffre(request.body.idclient, request.body.idservice);
+        const pourcentageOffre = (request.body.prixpaye * pourcentage) / 100; 
+        const pourcentageFinal = Math.max(pourcentageOffre, 0);
+        const prixPaye = Number(request.body.prixpaye) - Number(pourcentageFinal);
+        const CommissionService = await getCommissionService(request.body.idservice,prixPaye);
         const dureeService = await getDuree(request.body.idservice);
         const comissionServicePourcentage = await getCommission(request.body.idservice);
-
         let rendezvous = new Rendezvous({
              date_heure: request.body.date_heure,
              service: request.body.idservice,
              client: request.body.idclient,
              employe: request.body.idemploye,
-             prixpaye: request.body.prixpaye,
+             prixpaye: prixPaye,
              rappel: request.body.rappel,
              comissionemploye: CommissionService,
              duree: dureeService,

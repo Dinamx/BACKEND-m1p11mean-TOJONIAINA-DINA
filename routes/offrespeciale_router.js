@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const { Offrespeciale , getAllOffres } = require("./objects/offrespeciale");
+const { Offrespeciale , getAllOffres , getPourcentageOffre } = require("./objects/offrespeciale");
 const sendEmail = require("./helpers/mailSender");
-
 
 router.get('/', function(req, res, next) {
     getAllOffres().then(offres => {
@@ -18,9 +17,9 @@ router.post('/add', function(request,response) {
         contenu: request.body.contenu,
         date_heure_envoi: request.body.date_heure_envoi,
         mail_envoi: request.body.mail_envoi,
-        pourcentage: Number,
-        date_fin: Date,
-        idservice: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' }
+        pourcentage: request.body.pourcentage,
+        date_fin: request.body.date_fin,
+        idservice: request.body.idservice
     });
     offrespeciale.save()
         .then(() => {
