@@ -17,7 +17,10 @@ router.post('/add', function(request,response) {
         idclient: request.body.idclient,
         contenu: request.body.contenu,
         date_heure_envoi: request.body.date_heure_envoi,
-        mail_envoi: request.body.mail_envoi
+        mail_envoi: request.body.mail_envoi,
+        pourcentage: Number,
+        date_fin: Date,
+        idservice: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' }
     });
     offrespeciale.save()
         .then(() => {
