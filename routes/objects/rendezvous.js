@@ -14,7 +14,8 @@ const RendezvousSchema = new mongoose.Schema({
     comissionemploye: Number,
     duree: Number,
     comission: {type: Number, min: 0, max: 100 },
-    etat_rdv: { type: Number, enum: [0,1] }
+    etat_rdv: { type: Number, enum: [0,1] },
+    etat_valid: { type: Number, enum: [0,1] }
 });
 
 const Rendezvous = mongoose.model('Rendezvous', RendezvousSchema);
@@ -80,7 +81,8 @@ function getRdvEmp(debutMois,finMois,date) {
     try {
         const formattedDate = moment(date).format('YYYY-MM-DD');
         return Rendezvous.find({
-            etat_rdv: 0,
+            etat_rdv: 1,
+            etat_valid: 1,
             $or: [
                 {
                     date_heure: {
@@ -198,6 +200,7 @@ async function getChiffreAffaire(debutJourMois, finJourMois,anneeCourante) {
             {
                 $match: { 
                     etat_rdv: 1, 
+                    etat_valid: 1,
                     date_heure: {
                         $gte: debutJourMois,
                         $lt: finJourMois
@@ -238,6 +241,7 @@ async function getTotalCommission(debutJourMois, finJourMois,anneeCourante) {
             {
                 $match: { 
                     etat_rdv: 1, 
+                    etat_valid: 1,
                     date_heure: {
                         $gte: debutJourMois,
                         $lt: finJourMois

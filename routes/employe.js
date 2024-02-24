@@ -6,6 +6,30 @@ const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDail
 const { getAllEmploye } = require("./objects/utilisateur");
 
 
+router.delete('/delete/:id', function(req, res, next) {
+    const rdvId = req.params.id;
+    Rendezvous.deleteOne({ _id: rdvId })
+        .then(() => {
+            res.status(200).json({ message: 'Suppression avec succès.' });
+        })
+        .catch(error => {
+            console.error('Une erreur s\'est produite lors de la suppression du rendez-vous : ', error);
+            res.status(500).json({ message: 'Une erreur s\'est produite lors de la suppression du rendez-vous.' });
+        });
+});
+
+router.put('/validate_rdv/:id', function(req, res, next) {
+    const rdvId = req.params.id;
+    Rendezvous.updateOne({ _id: rdvId }, { etat_valid : 1 })
+        .then(() => {
+            res.status(200).json({ message: 'Modification avec succès.' });
+        })
+        .catch(error => {
+            console.error('Une erreur s\'est produite lors de la mise à jour du rendez-vous : ', error);
+            res.status(500).json({ message: 'Une erreur s\'est produite lors de la mise à jour du rendez-vous.' });
+        });
+});
+
 router.post('/search_task_daily', function(req, res, next) {
     const empId = req.body.emp_id;
     const currentDate = req.body.date;

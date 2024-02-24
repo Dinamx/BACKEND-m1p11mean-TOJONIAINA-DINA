@@ -20,7 +20,7 @@ router.post('/login', function(req, res, next) {
             if (!user) {
                 return res.status(401).json({ message: 'Login failed: Email ou mot de passe incorrect.' });
             }
-            const token = jwt.sign({ email: user.email }, 'apkmean', { expiresIn: '1h' });
+            const token = jwt.sign({ email: user.email }, 'apkmean', { expiresIn: '7d' });
             res.status(200).json({ message: 'Login successful.', userId: user._id , token: token });
         })
         .catch(error => {
@@ -42,7 +42,7 @@ router.post('/signup', function(request, response) {
     utilisateur.save()
         .then(() => {
             console.log('SIGNUP , Done Be ');
-            const token = jwt.sign({ email: utilisateur.email }, 'apkmean', { expiresIn: '1h' });
+            const token = jwt.sign({ email: utilisateur.email }, 'apkmean', { expiresIn: '7d' });
             response.json({ message: 'Signup request received', userId: utilisateur._id, token: token });
         })
         .catch(error => {

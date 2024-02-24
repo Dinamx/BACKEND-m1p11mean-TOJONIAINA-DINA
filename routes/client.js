@@ -46,7 +46,8 @@ router.post('/rendezvous/add', async function(request, response, next) {
              comissionemploye: CommissionService,
              duree: dureeService,
              comission: comissionServicePourcentage,
-             etat_rdv:0
+             etat_rdv:0,
+             etat_valid:0
              });
     
         rendezvous.save().then(() => {
