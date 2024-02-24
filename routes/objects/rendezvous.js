@@ -7,9 +7,10 @@ const RendezvousSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     date_heure: Date,
     service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
-    client: String,
+    client: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
     employe: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
     prixpaye: Number,
+    rappel: Number,
     comissionemploye: Number,
     duree: Number,
     comission: {type: Number, min: 0, max: 100 },
@@ -22,21 +23,32 @@ const Rendezvous = mongoose.model('Rendezvous', RendezvousSchema);
 
 function getHistoriqueRendezVous(idclient)
 {
-    return Rendezvous.find({ client: idclient }).populate({
-        path: 'employe',
-        select: 'email',
-        match: { type_user: 'employe' }
-    })
-    .exec();
+    return Rendezvous.find({ client: idclient }).populate([
+        {
+            path: 'employe',
+            select: 'email',
+            match: { type_user: 'employe' }
+        },
+        {
+            path: 'client',
+            select: { email: 'email' },
+            match: { type_user: 'client' }
+        }
+    ]).exec();
 }
 
 function getAllRendezVousEmp(id_employe) {
     if (id_employe) {
-        return Rendezvous.find({ employe: id_employe }).populate({
+        return Rendezvous.find({ employe: id_employe }).populate([{
             path: 'employe',
             select: 'email',
             match: { type_user: 'employe' }
-        })
+        },
+        {
+            path: 'client',
+            select: { email: 'email' },
+            match: { type_user: 'client' }
+        }])
         .exec();
     } else {
         return Rendezvous.find({}).exec();
@@ -52,10 +64,15 @@ function getTaskDaily(id_employe,currentDate) {
             $lt: moment(formattedCurrentDate).add(1, 'days').toDate() 
         } 
     })
-    .populate({
+    .populate([{
         path: 'service',
         select: 'description'
-    })
+    },
+    {
+        path: 'client',
+        select: { email: 'email' },
+        match: { type_user: 'client' }
+    }])
     .exec();
 }
 
@@ -78,11 +95,16 @@ function getRdvEmp(debutMois,finMois,date) {
                     }
                 }
             ]
-        }).populate({
+        }).populate([{
             path: 'employe',
             select: 'email',
             match: { type_user: 'employe' }
-        }).exec();       
+        },
+        {
+            path: 'client',
+            select: { email: 'email' },
+            match: { type_user: 'client' }
+        }]).exec();       
     } catch (error) {
         throw new Error('Une erreur s\'est roduite lors de la récupération des rendez-vous pour le mois en cours : ' + error.message);
     }

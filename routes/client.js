@@ -18,13 +18,9 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get('/rendezvous/historique', function(req, res, next) {
-    const token = req.headers.authorization;
-    if (!token) {
-        return res.status(401).json({ message: 'Token non fourni.' });
-    }
-
-    getHistoriqueRendezVous(token)
+router.get('/rendezvous/historique/:id', function(req, res, next) {
+    const idclient = req.params.id;
+    getHistoriqueRendezVous(idclient)
         .then(rendezvous => {
             res.json(rendezvous);
         })
@@ -36,10 +32,6 @@ router.get('/rendezvous/historique', function(req, res, next) {
 
 router.post('/rendezvous/add', async function(request, response, next) {
     try {
-        const token = request.headers.authorization;
-        if (!token) {
-            return response.status(401).json({ message: 'Token non fourni.' });
-        }
         const CommissionService = await getCommissionService(request.body.idservice, request.body.prixpaye);
         const dureeService = await getDuree(request.body.idservice);
         const comissionServicePourcentage = await getCommission(request.body.idservice);
@@ -47,9 +39,10 @@ router.post('/rendezvous/add', async function(request, response, next) {
         let rendezvous = new Rendezvous({
              date_heure: request.body.date_heure,
              service: request.body.idservice,
-             client: token,
+             client: request.body.idclient,
              employe: request.body.idemploye,
              prixpaye: request.body.prixpaye,
+             rappel: request.body.rappel,
              comissionemploye: CommissionService,
              duree: dureeService,
              comission: comissionServicePourcentage,
