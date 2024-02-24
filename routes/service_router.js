@@ -13,6 +13,7 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(request,response) {
     let service = new Service({
         description: request.body.description,
+        image: request.body.image,
         prix: request.body.prix,
         durée: request.body.durée,
         comission: request.body.comission
