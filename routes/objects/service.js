@@ -6,7 +6,7 @@ const ServiceSchema = new mongoose.Schema({
     description: String,
     image: String,
     prix: Number,
-    durée: { type: Number, min: 0 },
+    duree: { type: Number, min: 0 },
     comission: { type: Number, min: 0, max: 100 }
 });
 

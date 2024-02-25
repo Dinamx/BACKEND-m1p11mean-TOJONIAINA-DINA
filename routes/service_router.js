@@ -15,7 +15,7 @@ router.post('/add', function(request,response) {
         description: request.body.nom,
         image: request.body.image,
         prix: request.body.prix,
-        durée: request.body.duree,
+        duree: request.body.duree,
         comission: request.body.commission
     });
     service.save()
