@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
+const moment = require('moment');
 
 let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -28,12 +29,13 @@ let transporter = nodemailer.createTransport({
 //         });
 //     });
 // }
-function sendEmail(receiverMail, dateToSend, mailContent) {
+function sendEmail(receiverMail, dateToSend, mailContent,pourcentage) {
+    const formattedDate = moment(dateToSend).format('LLLL');
     let mailOptions = {
         from: 'recrutementtana.pro@gmail.com',
         to: receiverMail,
         subject: `Offre spéciale`,
-        text: mailContent
+        text: pourcentage + '% de réduction - Offre spéciale : ' + mailContent
     };
 
     transporter.sendMail(mailOptions, function(error, info){
@@ -45,4 +47,27 @@ function sendEmail(receiverMail, dateToSend, mailContent) {
     });
 }
 
-module.exports = sendEmail;
+function rappelEmail(receiverMail,dateToSend,service,duree,employe) {
+    const formattedDate = moment(dateToSend).format('LLLL');
+    let mailOptions = {
+        from: 'recrutementtana.pro@gmail.com',
+        to: receiverMail,
+        subject: 'Rappel pour votre rendez-vous ' + service,
+        text: 'vous avez un rendez vous avec' + ' ' + employe + ' pour votre' + service + ' .' + formattedDate + ' pour une durée de' + ' ' + duree + 'mn'
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) 
+        {
+            console.log(error);
+        } 
+        else {
+            console.log(`Email scheduled to be sent at ${dateToSend}: ` + info.response);
+        }
+    });
+}
+
+module.exports = {
+    sendEmail,
+    rappelEmail
+};

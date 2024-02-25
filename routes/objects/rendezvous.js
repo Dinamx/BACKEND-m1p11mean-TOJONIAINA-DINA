@@ -276,7 +276,6 @@ async function getTotalCommission(debutJourMois, finJourMois,anneeCourante) {
     }
 }
 
-
 async function getStatBenefice(debutJourMois, finJourMois,anneeCourante) {
     try {
     const chiffre_affaire = await getChiffreAffaire(debutJourMois,finJourMois,anneeCourante);

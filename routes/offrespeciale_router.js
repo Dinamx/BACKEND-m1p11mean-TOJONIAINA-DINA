@@ -30,10 +30,11 @@ router.post('/add', function(request,response) {
             var diffInMilliseconds = targetDate - now;
           
             setTimeout(function() {
-              sendEmail(offrespeciale.mail_envoi,targetDate,offrespeciale.contenu);
+              sendEmail(offrespeciale.mail_envoi,targetDate,offrespeciale.contenu,offrespeciale.pourcentage);
             }, diffInMilliseconds);
-          
+           
             response.status(201).send('Email will be sent at the specified date and time.');
+
         })
         .catch(error => console.error('An error occurred while saving an offrespeciale: ', error));
 })

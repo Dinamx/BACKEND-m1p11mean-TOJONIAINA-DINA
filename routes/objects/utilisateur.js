@@ -43,6 +43,15 @@ async function getUser(email, password) {
     }
 }
 
+async function getEmploye(id) {
+try {
+    const utilisateur = await Utilisateur.findOne({ _id: id, type_user: 'employe' }).exec();
+    return utilisateur ? utilisateur.email : null;
+} catch (error) {
+    console.error('Une erreur s\'est produite lors de la récupération de l\'utilisateur: ', error);
+    throw error;
+}
+}
 
 module.exports = Utilisateur;
-module.exports = { Utilisateur, getAllUsers , getAllEmploye , getAllClient};
+module.exports = { Utilisateur, getAllUsers , getAllEmploye , getAllClient , getEmploye};

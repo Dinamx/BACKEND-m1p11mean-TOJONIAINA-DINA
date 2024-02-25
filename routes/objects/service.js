@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { Utilisateur } = require("./utilisateur");
 
 const ServiceSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
@@ -55,5 +56,16 @@ async function getDuree(idservice){
     }
 }
 
+async function getDescription(idService) {
+    try {
+        const service = await Service.findById(idService).exec();
+        return service.description; 
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération du service: ', error);
+        throw error; 
+    }
+}
+
+
 module.exports = Service;
-module.exports = { Service,getAllServices,getCommissionService,getDuree,getCommission};
+module.exports = { Service,getAllServices,getCommissionService,getDuree,getCommission,getDescription};
