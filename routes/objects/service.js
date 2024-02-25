@@ -49,7 +49,7 @@ async function getDuree(idservice){
         if (!service) {
             throw new Error('Service non trouvé');
         }
-        return service.durée; 
+        return service.duree; 
     } catch (error) {
         console.error('Une erreur s\'est produite lors de la récupération de la durree du service: ', error);
         throw error; 

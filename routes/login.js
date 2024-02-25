@@ -21,7 +21,7 @@ router.post('/login', function(req, res, next) {
                 return res.status(401).json({ message: 'Login failed: Email ou mot de passe incorrect.' });
             }
             const token = jwt.sign({ email: user.email }, 'apkmean', { expiresIn: '7d' });
-            res.status(200).json({ message: 'Login successful.', userId: user._id , token: token });
+            res.status(200).json({ message: 'Login successful.', userId: user._id , token: token , type_user: user.type_user });
         })
         .catch(error => {
             console.error('An error occurred while logging in: ', error);
@@ -43,7 +43,7 @@ router.post('/signup', function(request, response) {
         .then(() => {
             console.log('SIGNUP , Done Be ');
             const token = jwt.sign({ email: utilisateur.email }, 'apkmean', { expiresIn: '7d' });
-            response.json({ message: 'Signup request received', userId: utilisateur._id, token: token });
+            response.json({ message: 'Signup request received', userId: utilisateur._id, token: token , type_user: utilisateur.type_user });
         })
         .catch(error => {
             console.error('An error occurred while saving the utilisateur: ', error);
