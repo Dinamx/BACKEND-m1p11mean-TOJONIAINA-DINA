@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const { Utilisateur } = require("./utilisateur");
 var { getTotalDepense  } = require("./depense");
+const { Horaire , getAllHoraires } = require("./horaire");
+
 
 const RendezvousSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
@@ -311,15 +313,44 @@ async function getDateFin(date_heure,duree)
     }
 }
 
-
+// ato fonction manao control rendez vous mi retourne 0 (libre) , 1 (occupe)
 async function controlRdv(date_h, duree,idemploye) {
     try {
         const dateFinRdv = await getDateFin(date_h,duree);
+        const dateFinRdvMoment = moment(dateFinRdv);
+        dateFinRdvMoment.subtract(1, 'hour');
+        const heureFin = dateFinRdvMoment.format('HH:mm');
+
+
         const date_heure = moment.utc(date_h).toDate();
+
+        const momentDateHeure = moment(date_heure);
+        // Soustraire une heure
+        momentDateHeure.subtract(1, 'hour');
+        const heureDebut = momentDateHeure.format('HH:mm');
+
+
         const rendezvousEmploye = await Rendezvous.find({
             employe: idemploye,
             etat_rdv: 0
         });
+
+        const horaireEmploye = await Horaire.findOne({ idemploye: idemploye });
+
+        const heureDebutTravailEmp = horaireEmploye.heureDebut;
+          
+        const heureFinTravailEmp = horaireEmploye.heureFin;
+
+        // check horaire of emp
+
+        if(heureDebut >= heureDebutTravailEmp &&  heureFin <= heureFinTravailEmp )
+        { }
+        else {
+            console.log("tsy tafiditra");
+            return 1;
+        }
+
+        // check disponibilty of emp
 
         for (const rdv of rendezvousEmploye) {
             const dateDebutRdvEmp = rdv.date_heure;

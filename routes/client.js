@@ -59,35 +59,34 @@ router.post('/rendezvous/add', async function(request, response, next) {
              etat_valid:0
              });
         const result = await controlRdv(request.body.date_heure,dureeService,request.body.idemploye);
-        
-        if(result == 0)
-        {
-         rendezvous.save().then(() => {
-           response.json({ message: 'Rendez vous added with success' , status: '200'});
-        //         const minutes_avant_envoi = rendezvous.rappel;
-        //         const now = new Date();
-        //         const temps_avant_envoi = new Date(rendezvous.date_heure - minutes_avant_envoi * 60000);
+       if(result == 0)
+       {
+        rendezvous.save().then(() => {
+          response.json({ message: 'Rendez vous added with success' , status: '200'});
+                const minutes_avant_envoi = rendezvous.rappel;
+                const now = new Date();
+                const temps_avant_envoi = new Date(rendezvous.date_heure - minutes_avant_envoi * 60000);
                     
-        //         if (now >= temps_avant_envoi) {
-        //             return;
-        //         }
-        //         getDescription(request.body.idservice)
-        //         .then(description => {
-        //             getEmploye(request.body.idemploye)
-        //                 .then(employeEmail => {
-        //                     setTimeout(() => {
-        //                         rappelEmail("tojohajarisoa@gmail.com", rendezvous.date_heure, description, rendezvous.duree, employeEmail);
-        //                     }, temps_avant_envoi - now);
-        //                 })
-        //                 .catch(error => console.error('An error occurred while getting employe: ', error));
-        //         })
-        //         .catch(error => console.error('An error occurred while getting description: ', error));
-         })
-        .catch(error => console.error('An error occurred while saving the utilisateur: ', error));
-        }
-        else {
-            response.json({ message: 'Cet employé est occupé à cette date et à cette heure.' , status: '400' })
-        }
+                if (now >= temps_avant_envoi) {
+                    return;
+                }
+                getDescription(request.body.idservice)
+                .then(description => {
+                    getEmploye(request.body.idemploye)
+                        .then(employeEmail => {
+                            setTimeout(() => {
+                                rappelEmail("tojohajarisoa@gmail.com", rendezvous.date_heure, description, rendezvous.duree, employeEmail);
+                            }, temps_avant_envoi - now);
+                        })
+                        .catch(error => console.error('An error occurred while getting employe: ', error));
+                })
+                .catch(error => console.error('An error occurred while getting description: ', error));
+        })
+       .catch(error => console.error('An error occurred while saving the utilisateur: ', error));
+       }
+       else {
+           response.json({ message: 'Cet employé est occupé à cette date et à cette heure.' , status: '400' })
+       }
     } catch (error) {
         console.error('Une erreur s\'est produite: ', error);
         response.status(500).json({ message: 'Une erreur s\'est produite lors de l\'ajout du rendez-vous.' });
