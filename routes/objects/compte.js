@@ -9,7 +9,7 @@ const CompteSchema = new mongoose.Schema({
 
 const Compte = mongoose.model('Compte', CompteSchema);
 
-module.exports = Compte;
+
 
 async function getTotal(idClient) {
     try {
@@ -48,4 +48,6 @@ async function getCompteReelClient(idClient) {
     }
 }
 
+
+module.exports = Compte;
 module.exports = { getCompteReelClient };

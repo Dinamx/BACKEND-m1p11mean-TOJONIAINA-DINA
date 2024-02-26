@@ -1,26 +1,30 @@
 var express = require('express');
 var router = express.Router();
-const { Compte, getTotal, getCompteReelClient} = require("./objects/compte"); // Assurez-vous que le chemin d'importation est correct
 
 
-router.get('',function (){
-    console.log('UYo');
-})
-// Route pour créer un nouveau compte
+const { Compte, getTotal, getCompteReelClient} = require("./objects/compte");
+
+
 router.post('/create', function(req, res, next) {
-    const { montant, idClient } = req.body;
-    const newCompte = new Compte({ montant, idClient });
+    try {
+        const { montant, idClient } = req.body;
+        console.log('req body ', montant);
+        console.log('req body ', idClient);
 
-    console.log('Create')
-
-    newCompte.save()
-        .then(() => {
-            res.status(201).json({ message: 'Compte créé avec succès.' });
-        })
-        .catch(error => {
-            console.error('Une erreur s\'est produite lors de la création du compte : ', error);
-            res.status(500).json({ message: 'Une erreur s\'est produite lors de la création du compte.' });
+        let newCompte = new Compte({
+            montant: montant,
+            idClient: idClient
         });
+        console.log('inside  2');
+        console.log('Create');
+
+        newCompte.save();
+        console.log('create done');
+        res.status(200).json({ message: 'Compte crédité avec succès.' });
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la création du compte : ', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors de la création du compte.' });
+    }
 });
 
 // Route pour obtenir le total des comptes pour un client spécifique
