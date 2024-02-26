@@ -4,7 +4,6 @@ const { Utilisateur } = require("./utilisateur");
 var { getTotalDepense } = require("./depense");
 const { Horaire, getAllHoraires } = require("./horaire");
 
-const { getCompteReelClient } = require("./compte");
 
 
 const RendezvousSchema = new mongoose.Schema({
