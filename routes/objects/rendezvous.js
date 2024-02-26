@@ -290,5 +290,53 @@ async function getStatBenefice(debutJourMois, finJourMois,anneeCourante) {
     }
 }
 
+// recuperer la date fin par rapport a la date du rdv et la duree
+async function getDateFin(date_heure,duree)
+{
+    try {
+        // Conversion de la date_heure en objet Date
+        const dateFin = new Date(date_heure);
+        // Ajout de la durée en minutes à la date de début
+        const minutes = dateFin.getMinutes() + duree;
+        dateFin.setMinutes(minutes);        
+        // Ajout d'une heure à la date de début
+        dateFin.setHours(dateFin.getHours() + 1);
+        if (dateFin.getHours() >= 24) {
+            dateFin.setDate(dateFin.getDate() + 1);
+            dateFin.setHours(dateFin.getHours() % 24);
+        }
+        return dateFin;
+    } catch (error) {
+        throw new Error('Une erreur s\'est produite lors du calcul de la date de fin : ' + error.message);
+    }
+}
 
-module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire , getTotalCommission , getStatBenefice };
+
+async function controlRdv(date_h, duree,idemploye) {
+    try {
+        const dateFinRdv = await getDateFin(date_h,duree);
+        const date_heure = moment.utc(date_h).toDate();
+        const rendezvousEmploye = await Rendezvous.find({
+            employe: idemploye,
+            etat_rdv: 0
+        });
+
+        for (const rdv of rendezvousEmploye) {
+            const dateDebutRdvEmp = rdv.date_heure;
+            const dateFinRdvEm = await getDateFin(rdv.date_heure,rdv.duree); 
+            const dateFinRdvEmp = new Date(dateFinRdvEm);
+            dateFinRdvEmp.setHours(dateFinRdvEmp.getHours() - 1);
+
+            if ((dateDebutRdvEmp.getTime() <= new Date(date_heure).getTime() && dateFinRdvEmp.getTime() >= dateFinRdv.getTime()) || (dateDebutRdvEmp.getTime() == new Date(date_heure).getTime() && dateFinRdvEmp.getTime() >= dateFinRdv.getTime()) || (dateDebutRdvEmp.getTime() <= new Date(date_heure).getTime() && dateFinRdvEmp.getTime() == new Date(date_heure).getTime()) || (dateDebutRdvEmp.getTime() == new Date(date_heure).getTime() && dateFinRdvEmp.getTime() == dateFinRdv.getTime()) || (dateDebutRdvEmp.getTime() >= new Date(date_heure).getTime() && dateFinRdvEmp.getTime() >= dateFinRdv.getTime()))  
+            {
+                return 1;
+            }
+        }
+        return 0;  //employe libre 
+    } catch (error) {
+        throw new Error('Une erreur s\'est produite lors du calcul de la date de fin : ' + error.message);
+    }
+}
+
+
+module.exports = { Rendezvous, getHistoriqueRendezVous , getAllRendezVousEmp , getTaskDaily , getTemps_moyen_travail , getStatReservation , getChiffreAffaire , getTotalCommission , getStatBenefice , controlRdv };
