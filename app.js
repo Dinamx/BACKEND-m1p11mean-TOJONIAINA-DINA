@@ -22,8 +22,12 @@ var clientRouter = require('./routes/client');
 var statRouter = require('./routes/statistiques');
 var depenseRouter = require('./routes/depense_router');
 var offrespecialeRouter = require('./routes/offrespeciale_router');
+<<<<<<< HEAD
 var horaireRouter = require('./routes/horaire_router');
 
+=======
+var compteClientRouter = require('./routes/compteClient');
+>>>>>>> master
 
 var app = express();
 
@@ -68,8 +72,13 @@ app.use('/statistiques',statRouter);
 // offre speciale
 app.use('/offrespeciales',offrespecialeRouter);
 
+<<<<<<< HEAD
 // horaire 
 app.use('/horaire',horaireRouter);
+=======
+// compte
+app.use('/compteClient',compteClientRouter);
+>>>>>>> master
 
 
 console.log('http://localhost:3000/')
