@@ -376,7 +376,7 @@ async function controlRdv(date_h, duree, idemploye) {
                     {
                         $group: {
                             _id: null,
-                            montantTotal: { $sum: "$prixpaye" }
+                            montantTotal: {$sum: "$prixpaye"}
                         }
                     }
                 ]);
@@ -394,8 +394,42 @@ async function controlRdv(date_h, duree, idemploye) {
 
             }
         }
+    }
+}
+
+// Get Total payé par client
+async function getMontantRendezvous(idClient) {
+    try {
+        const montantTotal = await Rendezvous.aggregate([
+            {
+                $match: {
+                    client: new mongoose.Types.ObjectId(idClient),
+                    etat_rdv: 1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    montantTotal: { $sum: "$prixpaye" }
+                }
+            }
+        ]);
+
+        // Si aucun rendez-vous n'est trouvé, retourner  0
+        if (montantTotal.length === 0) {
+            return 0;
+        }
+
+        // Retourner le montant total des rendez-vous
+        return montantTotal[0].montantTotal;
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération du montant total des rendez-vous : ', error);
+        throw error;
+
+    }
+}
 
 
 
 
-        module.exports = { Rendezvous, getHistoriqueRendezVous, getAllRendezVousEmp, getTaskDaily, getTemps_moyen_travail, getStatReservation, getChiffreAffaire, getTotalCommission, getStatBenefice, getMontantRendezvous, controlRdv };
+module.exports = { Rendezvous, getHistoriqueRendezVous, getAllRendezVousEmp, getTaskDaily, getTemps_moyen_travail, getStatReservation, getChiffreAffaire, getTotalCommission, getStatBenefice, getMontantRendezvous, controlRdv };
