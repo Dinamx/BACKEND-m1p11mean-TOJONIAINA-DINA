@@ -7,7 +7,7 @@ var logger = require('morgan');
 // const MongoClient = require('mongodb').MongoClient
 const mongoose = require('mongoose');
 const connectToDb = require('./routes/connection');
-const cors  = require('cors');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
 
@@ -22,12 +22,16 @@ var clientRouter = require('./routes/client');
 var statRouter = require('./routes/statistiques');
 var depenseRouter = require('./routes/depense_router');
 var offrespecialeRouter = require('./routes/offrespeciale_router');
-<<<<<<< HEAD
+
 var horaireRouter = require('./routes/horaire_router');
 
-=======
 var compteClientRouter = require('./routes/compteClient');
->>>>>>> master
+
+var horaireRouter = require('./routes/horaire_router');
+
+
+var compteClientRouter = require('./routes/compteClient');
+
 
 var app = express();
 
@@ -55,42 +59,46 @@ app.use('/login', loginRouter);
 app.use('/test', testRouteur);
 
 // employe 
-app.use('/employes',employeRouter);
+app.use('/employes', employeRouter);
 
 // service 
-app.use('/services',serviceRouter);
+app.use('/services', serviceRouter);
 
 // client 
-app.use('/client',clientRouter);
+app.use('/client', clientRouter);
 
 // depense
-app.use('/depenses',depenseRouter);
+app.use('/depenses', depenseRouter);
 
 // statistiques 
-app.use('/statistiques',statRouter);
+app.use('/statistiques', statRouter);
 
 // offre speciale
-app.use('/offrespeciales',offrespecialeRouter);
+app.use('/offrespeciales', offrespecialeRouter);
 
-<<<<<<< HEAD
+
+
 // horaire 
 app.use('/horaire',horaireRouter);
-=======
+
 // compte
 app.use('/compteClient',compteClientRouter);
->>>>>>> master
 
+// horaire 
+app.use('/horaire', horaireRouter);
+// compte
+app.use('/compteClient', compteClientRouter);
 
 console.log('http://localhost:3000/')
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
