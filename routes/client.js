@@ -3,11 +3,11 @@ var router = express.Router();
 const { rappelEmail } = require("./helpers/mailSender");
 const moment = require('moment');
 
-const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp , controlRdv } = require("./objects/rendezvous");
+const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp , controlRdv , getMontantRendezvous } = require("./objects/rendezvous");
 const { Service , getCommissionService , getDuree , getCommission , getDescription } = require("./objects/service");
 const { getAllClient , getEmploye } = require("./objects/utilisateur");
 const { getPourcentageOffre } = require("./objects/offrespeciale");
-
+const { getTotal } = require("./objects/compte");
 
 router.get('/', function(req, res, next) {
     getAllClient()
@@ -58,11 +58,17 @@ router.post('/rendezvous/add', async function(request, response, next) {
              etat_rdv:0,
              etat_valid:0
              });
-        const result = await controlRdv(request.body.date_heure,dureeService,request.body.idemploye);
-       if(result == 0)
+        
+             const total = await getTotal(request.body.idclient);
+             const MontantTotalRdv = await getMontantRendezvous(request.body.idclient);
+             const soldeClient = total - MontantTotalRdv;
+    
+             const result = await controlRdv(request.body.date_heure,dureeService,request.body.idemploye);
+        
+        if(result == 0)
        {
-        rendezvous.save().then(() => {
-          response.json({ message: 'Rendez vous added with success' , status: '200'});
+       rendezvous.save().then(() => {
+         response.json({ message: 'Rendez vous added with success' , status: '200'});
                 const minutes_avant_envoi = rendezvous.rappel;
                 const now = new Date();
                 const temps_avant_envoi = new Date(rendezvous.date_heure - minutes_avant_envoi * 60000);
@@ -84,7 +90,12 @@ router.post('/rendezvous/add', async function(request, response, next) {
         })
        .catch(error => console.error('An error occurred while saving the utilisateur: ', error));
        }
-       else {
+       else if(soldeClient < prixPaye)
+       {
+        response.json({ message: 'Solde insufisant.' , status: '400' })
+       }
+       else
+        {
            response.json({ message: 'Cet employé est occupé à cette date et à cette heure.' , status: '400' })
        }
     } catch (error) {
