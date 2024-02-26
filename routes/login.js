@@ -8,9 +8,11 @@ const crypto = require('crypto');
 const { Utilisateur, getAllUsers } = require("./objects/utilisateur");
 
 
-router.post('/login', function(req, res, next) {
+router.post('', function(req, res, next) {
     console.log('LOGIN, here lays the code for traitement');
-    
+
+
+
     const email = req.body.email;
     const password = req.body.password;
 
@@ -21,7 +23,7 @@ router.post('/login', function(req, res, next) {
                 return res.status(401).json({ message: 'Login failed: Email ou mot de passe incorrect.' });
             }
             const token = jwt.sign({ email: user.email }, 'apkmean', { expiresIn: '7d' });
-            res.status(200).json({ message: 'Login successful.', userId: user._id , token: token , type_user: user.type_user });
+            res.status(200).json({ message: 'Login successful.', userId: user._id , email: user.email  , token: token , type_user: user.type_user });
         })
         .catch(error => {
             console.error('An error occurred while logging in: ', error);
@@ -62,7 +64,5 @@ router.get('/users', function(req, res, next) {
         .catch(error => console.error('Une erreur s\'est produite lors de la récupération des utilisateurs: ', error));
 });
 
-
-//Maintenant fais moi un /Users qui me retourne la liste des users
 
 module.exports = router;
