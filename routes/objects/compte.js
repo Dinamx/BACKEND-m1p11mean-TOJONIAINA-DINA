@@ -27,8 +27,6 @@ async function getTotal(idClient) {
     }
 }
 
-module.exports = { Compte, getTotal };
-
 
 async function getCompteReelClient(idClient) {
     try {
@@ -48,6 +46,4 @@ async function getCompteReelClient(idClient) {
     }
 }
 
-
-module.exports = Compte;
-module.exports = { getCompteReelClient };
+module.exports = { Compte, getTotal  , getCompteReelClient };
