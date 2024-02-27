@@ -1,57 +1,61 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
-const { Utilisateur } = require("./utilisateur");
-var { getTotalDepense } = require("./depense");
-const { Horaire, getAllHoraires } = require("./horaire");
-
+const {Utilisateur} = require("./utilisateur");
+var {getTotalDepense} = require("./depense");
+const {Horaire, getAllHoraires} = require("./horaire");
 
 
 const RendezvousSchema = new mongoose.Schema({
-    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    _id: {type: mongoose.Schema.Types.ObjectId, auto: true},
     date_heure: Date,
-    service: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
-    client: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
-    employe: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
+    service: {type: mongoose.Schema.Types.ObjectId, ref: 'Service'},
+    client: {type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur'},
+    employe: {type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur'},
     prixpaye: Number,
     rappel: Number,
     comissionemploye: Number,
     duree: Number,
-    comission: { type: Number, min: 0, max: 100 },
-    etat_rdv: { type: Number, enum: [0, 1] },
-    etat_valid: { type: Number, enum: [0, 1] }
+    comission: {type: Number, min: 0, max: 100},
+    etat_rdv: {type: Number, enum: [0, 1]},
+    etat_valid: {type: Number, enum: [0, 1]}
 });
+
 
 const Rendezvous = mongoose.model('Rendezvous', RendezvousSchema);
 
 
-
 function getHistoriqueRendezVous(idclient) {
-    return Rendezvous.find({ client: idclient }).populate([
+    return Rendezvous.find({client: idclient}).populate([
         {
             path: 'employe',
             select: 'email',
-            match: { type_user: 'employe' }
+            match: {type_user: 'employe'}
         },
         {
             path: 'client',
-            select: { email: 'email' },
-            match: { type_user: 'client' }
+            select: 'email',
+            match: {type_user: 'client'}
         }
     ]).exec();
 }
 
 function getAllRendezVousEmp(id_employe) {
     if (id_employe) {
-        return Rendezvous.find({ employe: id_employe }).populate([{
+        return Rendezvous.find({employe: id_employe}).populate([{
             path: 'employe',
             select: 'email',
-            match: { type_user: 'employe' }
+            match: {type_user: 'employe'}
         },
-        {
-            path: 'client',
-            select: { email: 'email' },
-            match: { type_user: 'client' }
-        }])
+            {
+                path: 'client',
+                select: 'email',
+                match: {type_user: 'client'}
+            },
+
+            {
+                path: 'service',
+                select: 'description',
+            }])
             .exec();
     } else {
         return Rendezvous.find({}).exec();
@@ -71,11 +75,11 @@ function getTaskDaily(id_employe, currentDate) {
             path: 'service',
             select: 'description'
         },
-        {
-            path: 'client',
-            select: { email: 'email' },
-            match: { type_user: 'client' }
-        }])
+            {
+                path: 'client',
+                select: {email: 'email'},
+                match: {type_user: 'client'}
+            }])
         .exec();
 }
 
@@ -102,13 +106,13 @@ function getRdvEmp(debutMois, finMois, date) {
         }).populate([{
             path: 'employe',
             select: 'email',
-            match: { type_user: 'employe' }
+            match: {type_user: 'employe'}
         },
-        {
-            path: 'client',
-            select: { email: 'email' },
-            match: { type_user: 'client' }
-        }]).exec();
+            {
+                path: 'client',
+                select: {email: 'email'},
+                match: {type_user: 'client'}
+            }]).exec();
     } catch (error) {
         throw new Error('Une erreur s\'est roduite lors de la récupération des rendez-vous pour le mois en cours : ' + error.message);
     }
@@ -135,7 +139,7 @@ async function getTemps_moyen_travail(debutMois, finMois) {
         });
 
         // Récupérer tous les employés de la base de données
-        const tousLesEmployes = await Utilisateur.find({ type_user: 'employe' });
+        const tousLesEmployes = await Utilisateur.find({type_user: 'employe'});
 
         // Ajouter les employés absents dans l'objet tempsTravailParEmploye avec un temps moyen de 0
         tousLesEmployes.forEach(employe => {
@@ -151,7 +155,7 @@ async function getTemps_moyen_travail(debutMois, finMois) {
         // Calculer le temps moyen de travail pour chaque employé
         const tempsMoyenParEmploye = {};
         for (const email in tempsTravailParEmploye) {
-            const { total_duree, nombre_rendezvous } = tempsTravailParEmploye[email];
+            const {total_duree, nombre_rendezvous} = tempsTravailParEmploye[email];
             tempsMoyenParEmploye[email] = nombre_rendezvous === 0 ? 0 : total_duree / nombre_rendezvous;
         }
 
@@ -171,7 +175,7 @@ async function getStatReservation(debutJourMois, finJourMois) {
 
         // Obtenir toutes les réservations pour le mois en cours
         const reservations = await Rendezvous.find({
-            date_heure: { $gte: debutJourMois, $lt: finJourMois }
+            date_heure: {$gte: debutJourMois, $lt: finJourMois}
         });
 
         // Compter le nombre de réservations pour chaque date
@@ -186,7 +190,7 @@ async function getStatReservation(debutJourMois, finJourMois) {
         while (currentDate < endDate) {
             const dateString = currentDate.toISOString().split('T')[0];
             const totalReservations = reservationsParDate[dateString] || 0;
-            result.push({ date: dateString, reservations: totalReservations });
+            result.push({date: dateString, reservations: totalReservations});
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
@@ -211,7 +215,7 @@ async function getChiffreAffaire(debutJourMois, finJourMois, anneeCourante) {
             },
             {
                 $addFields: {
-                    annee: { $dateToString: { format: "%Y", date: "$date_heure" } }
+                    annee: {$dateToString: {format: "%Y", date: "$date_heure"}}
                 }
             },
             {
@@ -222,7 +226,7 @@ async function getChiffreAffaire(debutJourMois, finJourMois, anneeCourante) {
             {
                 $group: {
                     _id: null,
-                    total_prixpaye: { $sum: '$prixpaye' }
+                    total_prixpaye: {$sum: '$prixpaye'}
                 }
             }
         ]);
@@ -252,7 +256,7 @@ async function getTotalCommission(debutJourMois, finJourMois, anneeCourante) {
             },
             {
                 $addFields: {
-                    annee: { $dateToString: { format: "%Y", date: "$date_heure" } }
+                    annee: {$dateToString: {format: "%Y", date: "$date_heure"}}
                 }
             },
             {
@@ -263,7 +267,7 @@ async function getTotalCommission(debutJourMois, finJourMois, anneeCourante) {
             {
                 $group: {
                     _id: null,
-                    total_commission: { $sum: '$comissionemploye' }
+                    total_commission: {$sum: '$comissionemploye'}
                 }
             }
         ]);
@@ -286,8 +290,7 @@ async function getStatBenefice(debutJourMois, finJourMois, anneeCourante) {
         const depense = Totaldepense + TotalCommission;
         const benefice = chiffre_affaire - depense;
         return benefice;
-    }
-    catch (error) {
+    } catch (error) {
         throw new Error('Une erreur s\'est produite lors du calcul du chiffre d\'Affaire : ' + error.message);
     }
 }
@@ -319,20 +322,20 @@ async function getMontantRendezvous(idClient) {
             {
                 $match: {
                     client: new mongoose.Types.ObjectId(idClient),
-                    etat_rdv:  1
+                    etat_rdv: 1
                 }
             },
             {
                 $group: {
                     _id: null,
-                    montantTotal: { $sum: "$prixpaye" }
+                    montantTotal: {$sum: "$prixpaye"}
                 }
             }
         ]);
 
         // Si aucun rendez-vous n'est trouvé, retourner  0
-        if (montantTotal.length ===  0) {
-            return  0;
+        if (montantTotal.length === 0) {
+            return 0;
         }
 
         // Retourner le montant total des rendez-vous
@@ -363,15 +366,15 @@ async function controlRdv(date_h, duree, idemploye) {
             etat_rdv: 0
         });
 
-        const horaireEmploye = await Horaire.findOne({ idemploye: idemploye });
+        const horaireEmploye = await Horaire.findOne({idemploye: idemploye});
 
         const heureDebutTravailEmp = horaireEmploye.heureDebut;
 
         const heureFinTravailEmp = horaireEmploye.heureFin;
-       
+
         // check horaire of emp
-        if (heureDebut >= heureDebutTravailEmp && heureFin <= heureFinTravailEmp) { }
-        else {
+        if (heureDebut >= heureDebutTravailEmp && heureFin <= heureFinTravailEmp) {
+        } else {
             return 1;
         }
 
@@ -392,5 +395,17 @@ async function controlRdv(date_h, duree, idemploye) {
     }
 }
 
-module.exports = { Rendezvous, getHistoriqueRendezVous, getAllRendezVousEmp, getTaskDaily, getTemps_moyen_travail, getStatReservation, getChiffreAffaire, getTotalCommission, getStatBenefice, getMontantRendezvous , controlRdv };
+module.exports = {
+    Rendezvous,
+    getHistoriqueRendezVous,
+    getAllRendezVousEmp,
+    getTaskDaily,
+    getTemps_moyen_travail,
+    getStatReservation,
+    getChiffreAffaire,
+    getTotalCommission,
+    getStatBenefice,
+    getMontantRendezvous,
+    controlRdv
+};
 
