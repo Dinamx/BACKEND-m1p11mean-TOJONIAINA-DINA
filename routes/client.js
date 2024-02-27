@@ -5,7 +5,7 @@ const moment = require('moment');
 
 const { Rendezvous , getHistoriqueRendezVous , getAllRendezVousEmp , controlRdv , getMontantRendezvous } = require("./objects/rendezvous");
 const { Service , getCommissionService , getDuree , getCommission , getDescription } = require("./objects/service");
-const { getAllClient , getEmploye } = require("./objects/utilisateur");
+const { getAllClient , getEmploye , getUserEmail } = require("./objects/utilisateur");
 const { getPourcentageOffre } = require("./objects/offrespeciale");
 const { getTotal } = require("./objects/compte");
 
@@ -69,20 +69,26 @@ router.post('/rendezvous/add', async function(request, response, next) {
        {
        rendezvous.save().then(() => {
          response.json({ message: 'Rendez vous added with success' , status: '200'});
-                const minutes_avant_envoi = rendezvous.rappel;
-                const now = new Date();
-                const temps_avant_envoi = new Date(rendezvous.date_heure - minutes_avant_envoi * 60000);
+         
+         const rappelmomentDateHeure = moment.utc(request.body.date_heure);
+         rappelmomentDateHeure.subtract(1, 'hour');
+         const minutes_avant_envoi = rendezvous.rappel;
+         const now = new Date();
+         const temps_avant_envoi = new Date(rappelmomentDateHeure - minutes_avant_envoi * 60000);
                     
                 if (now >= temps_avant_envoi) {
                     return;
                 }
+                
                 getDescription(request.body.idservice)
                 .then(description => {
                     getEmploye(request.body.idemploye)
                         .then(employeEmail => {
-                            setTimeout(() => {
-                                rappelEmail("tojohajarisoa@gmail.com", rendezvous.date_heure, description, rendezvous.duree, employeEmail);
-                            }, temps_avant_envoi - now);
+                            getUserEmail(request.body.idclient).then(userEmail => {
+                                setTimeout(() => {
+                                    rappelEmail(userEmail,date_heure, description, rendezvous.duree, employeEmail);
+                                }, temps_avant_envoi - now);        
+                            }).catch(error => console.error('An error occurred while getting email user: ', error));
                         })
                         .catch(error => console.error('An error occurred while getting employe: ', error));
                 })

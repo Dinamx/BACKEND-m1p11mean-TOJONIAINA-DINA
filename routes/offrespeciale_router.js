@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 
 const { Offrespeciale , getAllOffres , getPourcentageOffre } = require("./objects/offrespeciale");
-const sendEmail = require("./helpers/mailSender");
+const { sendEmail } = require("./helpers/mailSender");
 
 router.get('/', function(req, res, next) {
     getAllOffres().then(offres => {
       res.json(offres);
-    }).catch(error => console.error('Une erreur s\'est produite', error));
+    }).catch(error => console.error('Une erreur s\'est produites', error));
 });
 
 router.post('/add', function(request,response) {
