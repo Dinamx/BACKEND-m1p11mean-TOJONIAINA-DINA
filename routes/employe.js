@@ -58,7 +58,9 @@ router.get('/task_daily/:emp_id', function(req, res, next) {
   
 router.put('/update_rdv/:id', function(req, res, next) {
     const rdvId = req.params.id;
-    Rendezvous.updateOne({ _id: rdvId }, { prixpaye : req.body.prixpaye , duree : req.body.duree })
+    console.log('update rendez vous : ' , req.body)
+    // Rendezvous.updateOne({ _id: rdvId }, { prixpaye : req.body.prixpaye , duree : req.body.duree })
+    Rendezvous.updateOne({ _id: rdvId }, req.body )
         .then(() => {
             res.status(200).json({ message: 'Modification avec succès.' });
         })
@@ -67,7 +69,6 @@ router.put('/update_rdv/:id', function(req, res, next) {
             res.status(500).json({ message: 'Une erreur s\'est produite lors de la mise à jour du rendez-vous.' });
         });
 });
-
 
 router.put('/terminer_rendez_vous/:id', function(req, res, next) {
     const rdvId = req.params.id;
