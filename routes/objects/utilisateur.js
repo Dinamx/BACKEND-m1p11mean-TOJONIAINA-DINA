@@ -6,7 +6,7 @@ const UtilisateurSchema = new mongoose.Schema({
     // _id: mongoose.Schema.Types.ObjectId,
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     image: { type: String, default: '/assets/images/profile/profile.png' }, //
-    nom: String, //
+    nom: { type: String, default: 'Personne ' }, //
     email: String,
     password: String,
     type_user: { type: String, enum: ['client', 'manager', 'employe'] }

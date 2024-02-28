@@ -43,6 +43,7 @@ router.post('/signup', function (request, response) {
         image: image
     });
 
+
     utilisateur.save()
         .then(() => {
             console.log('SIGNUP , Done Be ');
