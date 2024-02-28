@@ -80,16 +80,15 @@ router.get('/chiffre_affaire', function(req, res, next) {
     });
 });
 
-router.post('/search_reservation', function(req, res, next) {
+router.post('/reservation/:mois', function(req, res, next) {
     const date = new Date();
-    const date_search = req.body.date;
-    const mois = req.body.mois; 
+    const mois = req.params.mois; 
     const debutJourMois = new Date(date.getFullYear(), mois - 1, 1); 
     debutJourMois.setDate(debutJourMois.getDate() + 1); 
     const debutJourMoisSuivant = new Date(date.getFullYear(), mois, 1);
     const finJourMois = new Date(debutJourMoisSuivant.getTime() - 1);
 
-    getStatReservation(debutJourMois,finJourMois,date_search).then(reservations => {
+    getStatReservation(debutJourMois,finJourMois).then(reservations => {
         res.json(reservations);
     })
     .catch(error => {
