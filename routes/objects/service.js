@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Utilisateur } = require("./utilisateur");
+const { getPourcentageOffre } = require("./offrespeciale");
 
 const ServiceSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
@@ -66,6 +67,31 @@ async function getDescription(idService) {
     }
 }
 
+async function getPrixService(idService) {
+    try {
+        const service = await Service.findById(idService).exec();
+        return service.prix; 
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération du service: ', error);
+        throw error; 
+    }
+}
+
+
+async function getPrice(idclient,idservice) {
+    try {
+       const pourcentage = await getPourcentageOffre(idclient,idservice);
+       const prixService = await getPrixService(idservice);
+       const pourcentageOffre = (prixService * pourcentage) / 100; 
+       const pourcentageFinal = Math.max(pourcentageOffre, 0);
+       const prixPaye = Number(prixService) - Number(pourcentageFinal);
+       return prixPaye;
+
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération de la commission du service: ', error);
+        throw error; 
+    }
+}
 
 module.exports = Service;
-module.exports = { Service,getAllServices,getCommissionService,getDuree,getCommission,getDescription};
+module.exports = { Service,getAllServices,getCommissionService,getDuree,getCommission,getDescription,getPrice};

@@ -1,7 +1,22 @@
 var express = require('express');
 var router = express.Router();
 
-const { Service , getAllServices } = require("./objects/service");
+const { Service , getAllServices , getPrice } = require("./objects/service");
+
+// avoir le prix suggeeree
+
+router.get('/prix/:idclient/:idservice', function(req, res, next) {
+    const idclient = req.params.idclient;
+    const idservice = req.params.idservice; 
+    getPrice(idclient,idservice).then(prix => {
+        res.json(prix);
+    })
+    .catch(error => {
+        console.error('Une erreur s\'est produite', error);
+        res.status(500).json({ message: 'Une erreur s\'est produite lors de la récupération des donnees.' });
+    });
+});
+
 
 
 router.get('/', function(req, res, next) {
