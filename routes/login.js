@@ -23,7 +23,7 @@ router.post('', function (req, res, next) {
                 return res.status(401).json({ message: 'Login failed: Email ou mot de passe incorrect.' });
             }
             const token = jwt.sign({ email: user.email }, 'apkmean', { expiresIn: '7d' });
-            res.status(200).json({ message: 'Login successful.', userId: user._id, email: user.email, token: token, type_user: user.type_user });
+            res.status(200).json({ message: 'Login successful.', userId: user._id, email: user.email, email: user.nom, image: user.image, token: token, type_user: user.type_user });
         })
         .catch(error => {
             console.error('An error occurred while logging in: ', error);
@@ -33,12 +33,14 @@ router.post('', function (req, res, next) {
 
 
 router.post('/signup', function (request, response) {
-    const { email, password, type_user } = request.body;
+    const { email, password, type_user, image, nom } = request.body;
 
     let utilisateur = new Utilisateur({
         email: email,
         password: password,
-        type_user: type_user
+        type_user: type_user,
+        nom: nom,
+        image: image
     });
 
     utilisateur.save()
@@ -69,9 +71,9 @@ router.get('/users', function (req, res, next) {
 
 router.put('/update/:idUser', function (req, res) {
     const userId = req.params.idUser;
-    const { email, password, type_user } = req.body;
+    const { email, password, type_user, image, nom } = req.body;
 
-    Utilisateur.findByIdAndUpdate(userId, { email, password, type_user }, { new: true })
+    Utilisateur.findByIdAndUpdate(userId, { email, password, type_user, image, nom }, { new: true })
         .then(updatedUser => {
             if (!updatedUser) {
                 return res.status(404).json({ message: "Utilisateur non trouvé" });
