@@ -23,7 +23,7 @@ router.post('', function (req, res, next) {
                 return res.status(401).json({ message: 'Login failed: Email ou mot de passe incorrect.' });
             }
             const token = jwt.sign({ email: user.email }, 'apkmean', { expiresIn: '7d' });
-            res.status(200).json({ message: 'Login successful.', userId: user._id, email: user.email, email: user.nom, image: user.image, token: token, type_user: user.type_user });
+            res.status(200).json({ message: 'Login successful.', userId: user._id, email: user.email, nom: user.nom, image: user.image, token: token, type_user: user.type_user });
         })
         .catch(error => {
             console.error('An error occurred while logging in: ', error);
