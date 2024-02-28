@@ -118,16 +118,15 @@ router.get('/reservation', function(req, res, next) {
     });
 });
 
-router.post('/search_temps_moyen_travail', function(req, res, next) {
+router.get('/temps_moyen_travail/:mois', function(req, res, next) {
     const date = new Date();
-    const date_search = req.body.date;
-    const mois = req.body.mois; 
+    const mois = req.params.mois; 
     const debutMois = new Date(date.getFullYear(), mois - 1, 1); 
     debutMois.setDate(debutMois.getDate() + 1); 
     const debutMoisSuivant = new Date(date.getFullYear(), mois, 1);
     const finMois = new Date(debutMoisSuivant.getTime() - 1);
 
-    getTemps_moyen_travail(debutMois,finMois,mois).then(durrees => {
+    getTemps_moyen_travail(debutMois,finMois).then(durrees => {
         res.json(durrees);
     })
     .catch(error => {
@@ -145,7 +144,7 @@ router.get('/temps_moyen_travail', function(req, res, next) {
     const finMois = new Date(debutMoisSuivant.getTime() - 1);
     const currentDate = moment().format('YYYY-MM-DD');
  
-    getTemps_moyen_travail(debutMois,finMois,null).then(durrees => {
+    getTemps_moyen_travail(debutMois,finMois).then(durrees => {
         res.json(durrees);
     })
     .catch(error => {
