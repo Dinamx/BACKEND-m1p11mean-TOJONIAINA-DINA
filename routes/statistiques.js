@@ -126,8 +126,12 @@ router.get('/temps_moyen_travail/:mois', function(req, res, next) {
     const debutMoisSuivant = new Date(date.getFullYear(), mois, 1);
     const finMois = new Date(debutMoisSuivant.getTime() - 1);
 
-    getTemps_moyen_travail(debutMois,finMois).then(durrees => {
-        res.json(durrees);
+    getTemps_moyen_travail(debutMois, finMois).then(durrees => {
+        const donneesReformatees = Object.entries(durrees).map(([nom, temps]) => ({
+            nom,
+            temps
+        }));
+        res.json(donneesReformatees);
     })
     .catch(error => {
         console.error('Une erreur s\'est produite', error);
