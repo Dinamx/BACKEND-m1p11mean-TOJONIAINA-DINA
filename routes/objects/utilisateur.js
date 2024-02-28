@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const UtilisateurSchema = new mongoose.Schema({
     // _id: mongoose.Schema.Types.ObjectId,
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    image: { type: String, default: '/assets/images/profile/profile.png' }, //
+    nom: String, //
     email: String,
     password: String,
     type_user: { type: String, enum: ['client', 'manager', 'employe'] }
@@ -44,13 +46,13 @@ async function getUser(email, password) {
 }
 
 async function getEmploye(id) {
-try {
-    const utilisateur = await Utilisateur.findOne({ _id: id, type_user: 'employe' }).exec();
-    return utilisateur ? utilisateur.email : null;
-} catch (error) {
-    console.error('Une erreur s\'est produite lors de la récupération de l\'utilisateur: ', error);
-    throw error;
-}
+    try {
+        const utilisateur = await Utilisateur.findOne({ _id: id, type_user: 'employe' }).exec();
+        return utilisateur ? utilisateur.email : null;
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération de l\'utilisateur: ', error);
+        throw error;
+    }
 }
 
 
@@ -65,4 +67,4 @@ async function getUserEmail(id) {
 }
 
 module.exports = Utilisateur;
-module.exports = { Utilisateur, getAllUsers , getAllEmploye , getAllClient , getEmploye , getUserEmail};
+module.exports = { Utilisateur, getAllUsers, getAllEmploye, getAllClient, getEmploye, getUserEmail };
