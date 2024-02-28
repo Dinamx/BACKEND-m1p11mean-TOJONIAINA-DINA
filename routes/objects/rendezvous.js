@@ -28,9 +28,13 @@ function getHistoriqueRendezVous(idclient) {
     return Rendezvous.find({client: idclient}).populate([
         {
             path: 'employe',
-            select: 'email',
+            select: 'nom',
             match: {type_user: 'employe'}
-        },
+        },{
+            path: 'service',
+            select: 'description',
+        }
+        ,
         {
             path: 'client',
             select: 'email',
