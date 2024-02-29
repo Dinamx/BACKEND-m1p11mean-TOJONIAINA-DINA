@@ -18,20 +18,35 @@ function getPreferenceClient(idClient) {
     return Preference.find({ client: idClient }).exec();
 }
 
-//  InsertionPreferenceClient
 function insertPreferenceClient(idClient, idService) {
-    const newPreference = new Preference({
+    // Vérifie d'abord si une préférence avec ces identifiants existe déjà
+    return Preference.findOne({
+        client: idClient,
+        service: idService
+    }).then(preference => {
+        // Si une préférence est trouvée, renvoie cette préférence
+        if (preference) {
+            return preference;
+        }
+        // Sinon, crée et sauvegarde une nouvelle préférence
+        const newPreference = new Preference({
+            client: idClient,
+            service: idService
+        });
+        return newPreference.save();
+    });
+}
+
+
+function deletePreferenceClient(idClient, idService) {
+    // Utilisez le modèle Preference pour supprimer la préférence correspondante
+    return Preference.findOneAndDelete({
         client: idClient,
         service: idService
     });
-
-    return newPreference.save();
 }
 
 
 
 
-
-
-
-module.exports = { Preference, getAllPreferenceClient, insertPreferenceClient };
+module.exports = { Preference, getPreferenceClient, insertPreferenceClient, deletePreferenceClient };

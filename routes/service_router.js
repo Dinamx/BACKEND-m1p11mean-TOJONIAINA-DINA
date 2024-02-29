@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { Service, getAllServices, getPrice } = require("./objects/service");
+const { Service, getAllServices, getPrice, getServicePrefClient } = require("./objects/service");
 
 // avoir le prix suggeeree
 
@@ -21,6 +21,13 @@ router.get('/prix/:idclient/:idservice', function (req, res, next) {
 
 router.get('/', function (req, res, next) {
     getAllServices().then(services => {
+        res.json(services);
+    }).catch(error => console.error('Une erreur s\'est produite', error));
+});
+
+router.get('/:idUser', function (req, res, next) {
+    const idUser = req.params.idUser; // Récupère l'ID de l'utilisateur à partir des paramètres de la route
+    getServicePrefClient(idUser).then(services => {
         res.json(services);
     }).catch(error => console.error('Une erreur s\'est produite', error));
 });
@@ -63,6 +70,15 @@ router.put('/update/:idService', function (req, res) {
             res.status(500).json({ message: 'Une erreur s\'est produite lors de la mise à jour de l\'utilisateur.' });
         });
 });
+
+
+
+
+
+
+
+
+
 
 
 

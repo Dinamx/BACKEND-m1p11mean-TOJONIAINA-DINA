@@ -80,7 +80,7 @@ app.use('/statistiques', statRouter);
 app.use('/offrespeciales', offrespecialeRouter);
 
 // preference
-app.use('/preference', offrespecialeRouter);
+app.use('/preference', preferenceRouter);
 
 
 // horaire 

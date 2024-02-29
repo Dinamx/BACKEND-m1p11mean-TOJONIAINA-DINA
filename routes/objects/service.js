@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Utilisateur } = require("./utilisateur");
+const { Preference } = require("./preferenceClient");
 const { getPourcentageOffre } = require("./offrespeciale");
 
 const ServiceSchema = new mongoose.Schema({
@@ -92,5 +93,31 @@ async function getPrice(idclient, idservice) {
     }
 }
 
-module.exports = Service;
-module.exports = { Service, getAllServices, getCommissionService, getDuree, getCommission, getDescription, getPrice };
+
+async function getServicePrefClient(idClient) {
+    try {
+        // Récupérer toutes les préférences du client
+        const preferences = await Preference.find({ client: idClient }).exec();
+        // Convertir les identifiants de service en chaînes de caractères
+        const preferenceIds = preferences.map(pref => pref.service.toString());
+
+        // Récupérer tous les services
+        const services = await Service.find({}).exec();
+
+        // Ajouter le champ 'favori' aux services
+        const servicesWithFavori = services.map(service => {
+            return {
+                ...service._doc, // Copie toutes les propriétés du service
+                favori: preferenceIds.includes(service._id.toString()) ? 1 : 0 // Convertir service._id en chaîne de caractères avant la comparaison
+            };
+        });
+
+        return servicesWithFavori;
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération des services avec le champ favori: ', error);
+        throw error;
+    }
+}
+
+
+module.exports = { Service, getAllServices, getCommissionService, getDuree, getCommission, getDescription, getPrice, getServicePrefClient };
