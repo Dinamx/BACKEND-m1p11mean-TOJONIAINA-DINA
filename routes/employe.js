@@ -18,7 +18,7 @@ router.delete('/delete/:id', function(req, res, next) {
         });
 });
 
-router.put('/validate_rdv/:id', function(req, res, next) {
+router.get('/validate_rdv/:id', function(req, res, next) {
     const rdvId = req.params.id;
     Rendezvous.updateOne({ _id: rdvId }, { etat_valid : 1 })
         .then(() => {
@@ -70,7 +70,7 @@ router.put('/update_rdv/:id', function(req, res, next) {
         });
 });
 
-router.put('/terminer_rendez_vous/:id', function(req, res, next) {
+router.get('/terminer_rendez_vous/:id', function(req, res, next) {
     const rdvId = req.params.id;
 
     Rendezvous.updateOne({ _id: rdvId }, { etat_rdv: 1 })
