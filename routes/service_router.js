@@ -42,32 +42,20 @@ router.post('/add', function (request, response) {
 
 
 
-router.put('/update/:idService', function (request, response) {
-    let service = new Service({
-        description: request.body.nom,
-        image: request.body.image,
-        prix: request.body.prix,
-        duree: request.body.duree,
-        comission: request.body.commission
-    });
-    service.save()
-        .then(() => {
-            response.json({ message: 'Service added with success', status: '200' });
-        })
-        .catch(error => console.error('An error occurred while saving the utilisateur: ', error));
-})
-
-
 
 router.put('/update/:idService', function (req, res) {
     const userId = req.params.idService;
     const { service, prix, duree, comission } = req.body;
 
+    console.log(req.body);
+
     Service.findByIdAndUpdate(userId, { service, prix, duree, comission }, { new: true })
         .then(updatedService => {
             if (!updatedService) {
+                console.log('Update service');
                 return res.status(404).json({ message: "Service non trouvé" });
             }
+            console.log('Updated');
             res.status(200).json({ message: 'Service mis à jour avec succès', user: updatedService });
         })
         .catch(error => {
