@@ -28,8 +28,12 @@ function getHistoriqueRendezVous(idclient) {
     return Rendezvous.find({ client: idclient }).populate([
         {
             path: 'employe',
-            select: 'email',
+            select: 'nom email', // Inclure à la fois le nom et l'email
             match: { type_user: 'employe' }
+        },
+        {
+            path: 'service',
+            select: 'description',
         },
         {
             path: 'client',
@@ -83,26 +87,15 @@ function getTaskDaily(id_employe, currentDate) {
         .exec();
 }
 
-function getRdvEmp(debutMois, finMois, date) {
+function getRdvEmp(debutMois, finMois) {
     try {
-        const formattedDate = moment(date).format('YYYY-MM-DD');
         return Rendezvous.find({
             etat_rdv: 1,
             etat_valid: 1,
-            $or: [
-                {
-                    date_heure: {
-                        $gte: debutMois,
-                        $lt: finMois
-                    }
-                },
-                {
-                    date_heure: {
-                        $gte: new Date(formattedDate),
-                        $lt: moment(formattedDate).add(1, 'days').toDate()
-                    }
-                }
-            ]
+            date_heure: {
+                $gte: debutMois,
+                $lt: finMois
+            }
         }).populate([{
             path: 'employe',
             select: 'email',
