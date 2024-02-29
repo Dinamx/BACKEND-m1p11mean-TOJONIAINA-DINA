@@ -23,6 +23,9 @@ var statRouter = require('./routes/statistiques');
 var depenseRouter = require('./routes/depense_router');
 var offrespecialeRouter = require('./routes/offrespeciale_router');
 
+
+var preferenceRouter = require('./routes/preferences');
+
 var horaireRouter = require('./routes/horaire_router');
 
 var compteClientRouter = require('./routes/compteClient');
@@ -76,13 +79,15 @@ app.use('/statistiques', statRouter);
 // offre speciale
 app.use('/offrespeciales', offrespecialeRouter);
 
+// preference
+app.use('/preference', offrespecialeRouter);
 
 
 // horaire 
-app.use('/horaire',horaireRouter);
+app.use('/horaire', horaireRouter);
 
 // compte
-app.use('/compteClient',compteClientRouter);
+app.use('/compteClient', compteClientRouter);
 
 // horaire 
 app.use('/horaire', horaireRouter);
