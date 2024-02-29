@@ -45,7 +45,7 @@ router.post('/add', function (request, response) {
 
 router.put('/update/:idService', function (req, res) {
     const userId = req.params.idService;
-    const { description, prix, duree, comission } = req.body;
+    const { description, prix, duree, comission, image } = req.body;
 
     console.log(req.body);
 
