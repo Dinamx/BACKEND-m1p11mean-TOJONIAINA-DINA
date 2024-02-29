@@ -45,11 +45,11 @@ router.post('/add', function (request, response) {
 
 router.put('/update/:idService', function (req, res) {
     const userId = req.params.idService;
-    const { service, prix, duree, comission } = req.body;
+    const { description, prix, duree, comission } = req.body;
 
     console.log(req.body);
 
-    Service.findByIdAndUpdate(userId, { service, prix, duree, comission }, { new: true })
+    Service.findByIdAndUpdate(userId, { description, prix, duree, comission }, { new: true })
         .then(updatedService => {
             if (!updatedService) {
                 console.log('Update service');
