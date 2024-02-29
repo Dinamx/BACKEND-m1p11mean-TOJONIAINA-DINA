@@ -49,7 +49,7 @@ router.put('/update/:idService', function (req, res) {
 
     console.log(req.body);
 
-    Service.findByIdAndUpdate(userId, { description, prix, duree, comission }, { new: true })
+    Service.findByIdAndUpdate(userId, { description, prix, duree, comission, image }, { new: true })
         .then(updatedService => {
             if (!updatedService) {
                 console.log('Update service');
