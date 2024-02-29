@@ -36,7 +36,7 @@ router.post('/', function (req, res, next) {
         });
 });
 
-router.delete('/', function (req, res, next) {
+router.post('/delete', function (req, res, next) {
     console.log('delete end');
     const idClient = req.body.client;
     const idService = req.body.service;
